@@ -1,0 +1,17 @@
+{
+  "algorithm": "drunkards_walk",
+  "layout": {
+    "map_width": 50,
+    "map_height": 40,
+    "drunkard_params": {
+        "target_floor_percent": 0.40,  
+        "start_pos": "center",       
+        "straight_bias": 0.6         
+    }
+  },
+  "content": { 
+    "enemy_density": 0.05, "treasure_density": 0.03, "trap_density": 0.08, 
+    "enemy_types": ["bat", "slime"], "treasure_types": ["gem"] 
+  },
+  "aesthetic": { "theme": "cave", "lighting_level": 0.2 }
+}

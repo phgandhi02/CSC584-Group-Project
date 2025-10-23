@@ -1,0 +1,16 @@
+{
+  "algorithm": "random_room_placement",
+  "layout": {
+    "map_width": 50,
+    "map_height": 40,
+    "max_rooms": 25,          
+    "room_size_min": 3,       
+    "room_size_max": 6,       
+    "corridor_width": 1        
+  },
+  "content": { 
+    "enemy_density": 0.15, "treasure_density": 0.03, "trap_density": 0.05, 
+    "enemy_types": ["goblin"], "treasure_types": ["gold_coin"] 
+  },
+  "aesthetic": { "theme": "default_dungeon", "lighting_level": 0.3 }
+}

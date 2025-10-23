@@ -1,0 +1,16 @@
+{
+  "algorithm": "random_room_placement",
+  "layout": {
+    "map_width": 50,
+    "map_height": 40,
+    "max_rooms": 8,           
+    "room_size_min": 8,       
+    "room_size_max": 15,      
+    "corridor_width": 2        
+  },
+  "content": { 
+    "enemy_density": 0.05, "treasure_density": 0.1, "trap_density": 0.01, 
+    "enemy_types": ["orc"], "treasure_types": ["chest"] 
+  },
+  "aesthetic": { "theme": "stone_fortress", "lighting_level": 0.8 }
+}
