@@ -11,3 +11,7 @@ This repository contains the source code for my CSC584 Building Game AI project.
 - https://pygame-dev.blogspot.com/
 - [Cellular Automata Method for Generating Random Cave-Like Levels](https://www.roguebasin.com/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels)
 - [Code design basics](https://roguebasin.com/index.php/Code_design_basics)
+
+## Relevant Articles
+- https://slsdo.github.io/procedural-dungeon/
+- http://pcg.wikidot.com/pcg-algorithm:dungeon-generation (many resources in here)
