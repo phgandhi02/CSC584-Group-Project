@@ -1,7 +1,7 @@
 import json
 import pygame
 from src.pcg_generator import generate_level  # Import the generator function
-from renderer import Renderer, TILE_SIZE          # Import the Renderer class
+from src.renderer import Renderer, TILE_SIZE          # Import the Renderer class
 
 
 def main():
