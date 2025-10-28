@@ -1,12 +1,13 @@
 import json
 import pygame
-from pcg_generator import generate_level # Import the generator function
+from src.pcg_generator import generate_level  # Import the generator function
 from renderer import Renderer, TILE_SIZE          # Import the Renderer class
+
 
 def main():
     # --- 1. Load Config ---
     try:
-        with open('jsons/dense`.json', 'r') as f: # Use our prototype config
+        with open('jsons/dense`.json', 'r') as f:  # Use our prototype config
             config = json.load(f)
     except FileNotFoundError:
         print("Error: map file not found!")
@@ -21,7 +22,7 @@ def main():
     except KeyError as e:
         print(f"Error: Missing key in config JSON: {e}")
         return
-    except Exception as e: # Catch other potential errors during generation
+    except Exception as e:  # Catch other potential errors during generation
         print(f"Error during level generation: {e}")
         return
 
@@ -41,22 +42,23 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE: # Allow quitting with Esc
+                if event.key == pygame.K_ESCAPE:  # Allow quitting with Esc
                     running = False
-                if event.key == pygame.K_SPACE: # Regenerate on Spacebar
+                if event.key == pygame.K_SPACE:  # Regenerate on Spacebar
                     print("Regenerating level...")
                     try:
                         level_grid = generate_level(config)
                     except Exception as e:
-                         print(f"Error during level regeneration: {e}")
-                         # Keep the old grid if regeneration fails
+                        print(f"Error during level regeneration: {e}")
+                        # Keep the old grid if regeneration fails
 
         # Drawing
         game_renderer.draw_level(level_grid)
-        pygame.display.flip() # Update the full screen
+        pygame.display.flip()  # Update the full screen
 
     # --- 5. Shutdown ---
     game_renderer.shutdown()
+
 
 if __name__ == "__main__":
     main()
