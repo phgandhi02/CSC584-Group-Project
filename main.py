@@ -1,14 +1,20 @@
-import json
+# Package Dependencies
 import pygame
+
+# File depedencies
 from src.pcg_generator import generate_level  # Import the generator function
 from src.renderer import Renderer, TILE_SIZE          # Import the Renderer class
 
+# Python modules
+import json
+from typing import Any
 
-def main():
+
+def main() -> None:
     # --- 1. Load Config ---
     try:
         with open('jsons/dense`.json', 'r') as f:  # Use our prototype config
-            config = json.load(f)
+            config: dict[str, Any] = json.load(f)
     except FileNotFoundError:
         print("Error: map file not found!")
         return
@@ -18,7 +24,7 @@ def main():
 
     # --- 2. Generate Level ---
     try:
-        level_grid = generate_level(config)
+        level_grid: list[list[int]] = generate_level(config)
     except KeyError as e:
         print(f"Error: Missing key in config JSON: {e}")
         return
@@ -27,12 +33,12 @@ def main():
         return
 
     # --- 3. Initialize Renderer ---
-    map_width = config['layout']['map_width']
-    map_height = config['layout']['map_height']
-    screen_width = map_width * TILE_SIZE
-    screen_height = map_height * TILE_SIZE
+    map_width: int | float = config['layout']['map_width']
+    map_height: int | float = config['layout']['map_height']
+    screen_width: int | float = map_width * TILE_SIZE
+    screen_height: int | float = map_height * TILE_SIZE
 
-    game_renderer = Renderer(screen_width, screen_height)
+    game_renderer = Renderer(int(screen_width), int(screen_height))
 
     # --- 4. Main Game Loop ---
     running = True
