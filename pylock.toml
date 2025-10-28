@@ -1,0 +1,13 @@
+lock-version = "1.0"
+created-by = "pip"
+
+[[packages]]
+name = "pygame"
+version = "2.6.1"
+
+[[packages.wheels]]
+name = "pygame-2.6.1-cp313-cp313-win_amd64.whl"
+url = "https://files.pythonhosted.org/packages/7e/11/17f7f319ca91824b86557e9303e3b7a71991ef17fd45286bf47d7f0a38e6/pygame-2.6.1-cp313-cp313-win_amd64.whl"
+
+[packages.wheels.hashes]
+sha256 = "813af4fba5d0b2cb8e58f5d95f7910295c34067dcc290d34f1be59c48bd1ea6a"
