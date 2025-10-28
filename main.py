@@ -1,14 +1,14 @@
+# Python modules
+import json
+from typing import Any, LiteralString
+import os
+
 # Package Dependencies
 import pygame
 
 # File depedencies
 from src.pcg_generator import generate_level  # Import the generator function
 from src.renderer import Renderer, TILE_SIZE          # Import the Renderer class
-
-# Python modules
-import json
-from typing import Any, LiteralString
-import os
 
 
 def main() -> None:
