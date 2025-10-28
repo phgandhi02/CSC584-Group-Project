@@ -7,13 +7,35 @@ from src.renderer import Renderer, TILE_SIZE          # Import the Renderer clas
 
 # Python modules
 import json
-from typing import Any
+from typing import Any, LiteralString
+import os
 
 
 def main() -> None:
+    print("Hi there!, Please choose one of the maps below to get started.")
+    user_selected_config: str = input("Type the corresponding number to load the map params. \
+          \n1.dense \
+          \n2.maze \
+          \n3.open \
+          \n4.sample \
+          \n")
+    match user_selected_config:
+        case "1":
+            user_selected_config = "dense.json"
+        case "2":
+            user_selected_config = "maze.json"
+        case "3":
+            user_selected_config = "open.json"
+        case "4":
+            user_selected_config = "sample.json"
+        case _:
+            user_selected_config = "sample.json"
+
+    config_file_path: LiteralString = os.path.join(
+        "jsons", user_selected_config)
     # --- 1. Load Config ---
     try:
-        with open('jsons/dense`.json', 'r') as f:  # Use our prototype config
+        with open(config_file_path, 'r') as f:  # Use our prototype config
             config: dict[str, Any] = json.load(f)
     except FileNotFoundError:
         print("Error: map file not found!")
