@@ -2,6 +2,105 @@ lock-version = "1.0"
 created-by = "pip"
 
 [[packages]]
+name = "astroid"
+version = "4.0.1"
+
+[[packages.wheels]]
+name = "astroid-4.0.1-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/47/f4/034361a9cbd9284ef40c8ad107955ede4efae29cbc17a059f63f6569c06a/astroid-4.0.1-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "37ab2f107d14dc173412327febf6c78d39590fdafcb44868f03b6c03452e3db0"
+
+[[packages]]
+name = "certifi"
+version = "2025.10.5"
+
+[[packages.wheels]]
+name = "certifi-2025.10.5-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/e4/37/af0d2ef3967ac0d6113837b44a4f0bfe1328c2b9763bd5b1744520e5cfed/certifi-2025.10.5-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "0f212c2744a9bb6de0c56639a6f68afe01ecd92d91f14ae897c4fe7bbeeef0de"
+
+[[packages]]
+name = "charset-normalizer"
+version = "3.4.4"
+
+[[packages.wheels]]
+name = "charset_normalizer-3.4.4-cp313-cp313-win_amd64.whl"
+url = "https://files.pythonhosted.org/packages/c4/26/b9924fa27db384bdcd97ab83b4f0a8058d96ad9626ead570674d5e737d90/charset_normalizer-3.4.4-cp313-cp313-win_amd64.whl"
+
+[packages.wheels.hashes]
+sha256 = "b435cba5f4f750aa6c0a0d92c541fb79f69a387c91e61f1795227e4ed9cece14"
+
+[[packages]]
+name = "colorama"
+version = "0.4.6"
+
+[[packages.wheels]]
+name = "colorama-0.4.6-py2.py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
+
+[[packages]]
+name = "dill"
+version = "0.4.0"
+
+[[packages.wheels]]
+name = "dill-0.4.0-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/50/3d/9373ad9c56321fdab5b41197068e1d8c25883b3fea29dd361f9b55116869/dill-0.4.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "44f54bf6412c2c8464c14e8243eb163690a9800dbe2c367330883b19c7561049"
+
+[[packages]]
+name = "idna"
+version = "3.11"
+
+[[packages.wheels]]
+name = "idna-3.11-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea"
+
+[[packages]]
+name = "isort"
+version = "7.0.0"
+
+[[packages.wheels]]
+name = "isort-7.0.0-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/7f/ed/e3705d6d02b4f7aea715a353c8ce193efd0b5db13e204df895d38734c244/isort-7.0.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "1bcabac8bc3c36c7fb7b98a76c8abb18e0f841a3ba81decac7691008592499c1"
+
+[[packages]]
+name = "mccabe"
+version = "0.7.0"
+
+[[packages.wheels]]
+name = "mccabe-0.7.0-py2.py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/27/1a/1f68f9ba0c207934b35b86a8ca3aad8395a3d6dd7921c0686e23853ff5a9/mccabe-0.7.0-py2.py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"
+
+[[packages]]
+name = "platformdirs"
+version = "4.5.0"
+
+[[packages.wheels]]
+name = "platformdirs-4.5.0-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/73/cb/ac7874b3e5d58441674fb70742e6c374b28b0c7cb988d37d991cde47166c/platformdirs-4.5.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "e578a81bb873cbb89a41fcc904c7ef523cc18284b7e3b3ccf06aca1403b7ebd3"
+
+[[packages]]
 name = "pygame"
 version = "2.6.1"
 
@@ -11,3 +110,58 @@ url = "https://files.pythonhosted.org/packages/7e/11/17f7f319ca91824b86557e9303e
 
 [packages.wheels.hashes]
 sha256 = "813af4fba5d0b2cb8e58f5d95f7910295c34067dcc290d34f1be59c48bd1ea6a"
+
+[[packages]]
+name = "pylint"
+version = "4.0.2"
+
+[[packages.wheels]]
+name = "pylint-4.0.2-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/1e/8b/2e814a255436fc6d604a60f1e8b8a186e05082aa3c0cabfd9330192496a2/pylint-4.0.2-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "9627ccd129893fb8ee8e8010261cb13485daca83e61a6f854a85528ee579502d"
+
+[[packages]]
+name = "pyyaml"
+version = "6.0.3"
+
+[[packages.wheels]]
+name = "pyyaml-6.0.3-cp313-cp313-win_amd64.whl"
+url = "https://files.pythonhosted.org/packages/97/c9/39d5b874e8b28845e4ec2202b5da735d0199dbe5b8fb85f91398814a9a46/pyyaml-6.0.3-cp313-cp313-win_amd64.whl"
+
+[packages.wheels.hashes]
+sha256 = "79005a0d97d5ddabfeeea4cf676af11e647e41d81c9a7722a193022accdb6b7c"
+
+[[packages]]
+name = "requests"
+version = "2.32.5"
+
+[[packages.wheels]]
+name = "requests-2.32.5-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6"
+
+[[packages]]
+name = "tomlkit"
+version = "0.13.3"
+
+[[packages.wheels]]
+name = "tomlkit-0.13.3-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/bd/75/8539d011f6be8e29f339c42e633aae3cb73bffa95dd0f9adec09b9c58e85/tomlkit-0.13.3-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0"
+
+[[packages]]
+name = "urllib3"
+version = "2.5.0"
+
+[[packages.wheels]]
+name = "urllib3-2.5.0-py3-none-any.whl"
+url = "https://files.pythonhosted.org/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc"
