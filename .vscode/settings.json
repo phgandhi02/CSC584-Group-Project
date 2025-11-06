@@ -8,5 +8,6 @@
     "python.analysis.typeCheckingMode": "strict",
     "python.analysis.typeEvaluation.deprecateTypingAliases": true,
     "python.analysis.typeEvaluation.disableBytesTypePromotions": true,
-    "python.analysis.typeEvaluation.enableReachabilityAnalysis": true
+    "python.analysis.typeEvaluation.enableReachabilityAnalysis": true,
+    "explorer.excludeGitIgnore": true
 }
