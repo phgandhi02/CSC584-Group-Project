@@ -35,3 +35,7 @@ The project uses port 11434 by default to connect to the LLM server. Make sure t
 ## Relevant Articles
 - https://slsdo.github.io/procedural-dungeon/
 - http://pcg.wikidot.com/pcg-algorithm:dungeon-generation (many resources in here)
+
+
+## References:
+[/assets/icon.png](https://stablediffusionweb.com/image/43360801-pixel-art-crusader)

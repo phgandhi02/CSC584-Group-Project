@@ -16,6 +16,7 @@
     ],
     "conventionalCommits.scopes": [
         "llm",
-        "main"
+        "main",
+        "assets"
     ]
 }
