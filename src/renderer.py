@@ -1,3 +1,8 @@
+"""
+Contains Renderer object which renders the game and the map. Contains int
+values for each tile for the map. Map is represented as a list[list[int]].
+
+"""
 from typing import Literal
 import pygame
 from pygame.font import Font
@@ -46,7 +51,3 @@ class Renderer:
                 elif tile == TILE_FLOOR:
                     pygame.draw.rect(self.screen, COLOR_LIGHT_GREY, rect)
                 # Add more tile types (enemies, treasure) later with different colors/sprites
-
-    def shutdown(self) -> None:
-        """ Quits Pygame. """
-        pygame.quit()

@@ -1,3 +1,9 @@
+"""
+Contains the Game object which is a singleton that manages the DunGen game.
+Game.run() contains the game flow logic. Object manages game logic, rendering,
+and cleanup for pygame dep.
+"""
+
 from pathlib import Path
 import json
 import locale
