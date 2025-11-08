@@ -1,11 +1,18 @@
 import random
-from typing import Any
+from typing import Any, Self
 
 TILE_WALL = 0
 TILE_FLOOR = 1
 
-
 class Rect:
+    """
+    Rectangle is a data struct that holds 4 points to represent the corners.
+
+    :param: x: x-position of the top left corner of rectangle
+    :param: y: y-position of the top-left corner of rectangle
+    :param: w: width of the rectangle
+    :param: h: height of the rectangle
+    """
     def __init__(self, x: int, y: int, w: int, h: int) -> None:
         self.x1: int = x
         self.y1: int = y
@@ -13,17 +20,37 @@ class Rect:
         self.y2: int = y + h
 
     def center(self) -> tuple[int, int]:
+        """
+        Calculates the center of the rectangle.
+
+        Returns:
+            tuple[int, int]: calculates the center position of the rectangle
+        """
         center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
         return (center_x, center_y)
 
-    def intersects(self, other: Any) -> bool:
+    def intersects(self, other: Self) -> bool:
+        """Returns True if rectangle is intersecting with another Rectangle
+
+        Args:
+            other (Rect): Other rectangle
+
+        Returns:
+            bool: True if self is intersecting another rectangle
+        """
         margin = 1
         return (self.x1 <= other.x2 + margin and self.x2 >= other.x1 - margin and
                 self.y1 <= other.y2 + margin and self.y2 >= other.y1 - margin)
 
 
 def create_room(grid: list[list[int]], room: Rect) -> None:
+    """Creates a room based on a rectangle size.
+
+    Args:
+        grid (list[list[int]]): map of the level
+        room (Rect): Rectangle representing room dimensions
+    """
     map_height: int = len(grid)
     map_width: int = len(grid[0])
     for y in range(max(1, room.y1), min(map_height - 1, room.y2)):  # Avoid carving edges
@@ -32,7 +59,17 @@ def create_room(grid: list[list[int]], room: Rect) -> None:
                 grid[y][x] = TILE_FLOOR
 
 
-def create_h_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int = 1) -> None:
+def create_H_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int = 1) -> None:
+    """Creates an H tunnel
+
+    Args:
+        grid (list[list[int]]): map of the level
+        x1 (int): _description_
+        x2 (int): _description_
+        y (int): Length of the tunnel/corridor
+        width (int, optional): Width of the tunnel/corridor. Defaults to 1.
+    """
+    # get the size of the map
     map_height: int = len(grid)
     map_width: int = len(grid[0])
     for x in range(min(x1, x2), max(x1, x2) + 1):
@@ -43,7 +80,16 @@ def create_h_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int 
                 grid[tunnel_y][x] = TILE_FLOOR
 
 
-def create_v_tunnel(grid: list[list[int]], y1: int, y2: int, x: int, width: int = 1) -> None:
+def create_V_tunnel(grid: list[list[int]], y1: int, y2: int, x: int, width: int = 1) -> None:
+    """Creates an tunnel going from one room down to another.
+
+    Args:
+        grid (list[list[int]]): map of the level
+        x1 (int): _description_
+        x2 (int): _description_
+        y (int): Length of the tunnel/corridor
+        width (int, optional): Width of the tunnel/corridor. Defaults to 1.
+    """
     # ... (Keep implementation as before) ...
     map_height: int = len(grid)
     map_width: int = len(grid[0])
@@ -187,10 +233,10 @@ def generate_random_rooms(config: dict[Any, Any]) -> list[list[int]]:
         (prev_x, prev_y) = rooms[i-1].center()
         (new_x, new_y) = rooms[i].center()
         if random.randint(0, 1) == 1:
-            create_h_tunnel(grid, prev_x, new_x, prev_y, corridor_width)
-            create_v_tunnel(grid, prev_y, new_y, new_x, corridor_width)
+            create_H_tunnel(grid, prev_x, new_x, prev_y, corridor_width)
+            create_V_tunnel(grid, prev_y, new_y, new_x, corridor_width)
         else:
-            create_v_tunnel(grid, prev_y, new_y, prev_x, corridor_width)
-            create_h_tunnel(grid, prev_x, new_x, new_y, corridor_width)
+            create_V_tunnel(grid, prev_y, new_y, prev_x, corridor_width)
+            create_H_tunnel(grid, prev_x, new_x, new_y, corridor_width)
 
     return grid
