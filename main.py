@@ -2,6 +2,7 @@
 import json
 from typing import Any, LiteralString
 import os
+import locale
 
 # Package Dependencies
 import pygame
@@ -35,7 +36,8 @@ def main() -> None:
         "jsons", user_selected_config)
     # --- 1. Load Config ---
     try:
-        with open(config_file_path, 'r') as f:  # Use our prototype config
+        with open(config_file_path, 'r', encoding=locale.getencoding()) as f: 
+            # Use our prototype config
             config: dict[str, Any] = json.load(f)
     except FileNotFoundError:
         print("Error: map file not found!")
