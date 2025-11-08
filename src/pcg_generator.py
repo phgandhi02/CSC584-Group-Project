@@ -1,87 +1,140 @@
 import random
-from typing import Any
+from typing import Any, Self
 
 TILE_WALL = 0
 TILE_FLOOR = 1
 
 class Rect:
-    def __init__(self, x: int, y: int, w: int, h: int):
-        self.x1 = x
-        self.y1 = y
-        self.x2 = x + w
-        self.y2 = y + h
+    """
+    Rectangle is a data struct that holds 4 points to represent the corners.
 
-    def center(self):
+    :param: x: x-position of the top left corner of rectangle
+    :param: y: y-position of the top-left corner of rectangle
+    :param: w: width of the rectangle
+    :param: h: height of the rectangle
+    """
+    def __init__(self, x: int, y: int, w: int, h: int) -> None:
+        self.x1: int = x
+        self.y1: int = y
+        self.x2: int = x + w
+        self.y2: int = y + h
+
+    def center(self) -> tuple[int, int]:
+        """
+        Calculates the center of the rectangle.
+
+        Returns:
+            tuple[int, int]: calculates the center position of the rectangle
+        """
         center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
         return (center_x, center_y)
 
-    def intersects(self, other: Any) -> bool:
+    def intersects(self, other: Self) -> bool:
+        """Returns True if rectangle is intersecting with another Rectangle
+
+        Args:
+            other (Rect): Other rectangle
+
+        Returns:
+            bool: True if self is intersecting another rectangle
+        """
         margin = 1
         return (self.x1 <= other.x2 + margin and self.x2 >= other.x1 - margin and
                 self.y1 <= other.y2 + margin and self.y2 >= other.y1 - margin)
 
-def create_room(grid: list[list[int]], room: Rect):
-    map_height = len(grid)
-    map_width = len(grid[0])
-    for y in range(max(1, room.y1), min(map_height - 1, room.y2)): # Avoid carving edges
+
+def create_room(grid: list[list[int]], room: Rect) -> None:
+    """Creates a room based on a rectangle size.
+
+    Args:
+        grid (list[list[int]]): map of the level
+        room (Rect): Rectangle representing room dimensions
+    """
+    map_height: int = len(grid)
+    map_width: int = len(grid[0])
+    for y in range(max(1, room.y1), min(map_height - 1, room.y2)):  # Avoid carving edges
         for x in range(max(1, room.x1), min(map_width - 1, room.x2)):
             if 1 <= y < map_height - 1 and 1 <= x < map_width - 1:
-                 grid[y][x] = TILE_FLOOR
+                grid[y][x] = TILE_FLOOR
 
-def create_h_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int=1):
-    map_height = len(grid)
-    map_width = len(grid[0])
+
+def create_H_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int = 1) -> None:
+    """Creates an H tunnel
+
+    Args:
+        grid (list[list[int]]): map of the level
+        x1 (int): _description_
+        x2 (int): _description_
+        y (int): Length of the tunnel/corridor
+        width (int, optional): Width of the tunnel/corridor. Defaults to 1.
+    """
+    # get the size of the map
+    map_height: int = len(grid)
+    map_width: int = len(grid[0])
     for x in range(min(x1, x2), max(x1, x2) + 1):
         for i in range(width):
-            tunnel_y = y + i - (width // 2)
+            tunnel_y: int = y + i - (width // 2)
             # Stay away from map edges slightly for tunnels
             if 1 <= tunnel_y < map_height - 1 and 1 <= x < map_width - 1:
-                 grid[tunnel_y][x] = TILE_FLOOR
+                grid[tunnel_y][x] = TILE_FLOOR
 
-def create_v_tunnel(grid: list[list[int]], y1: int, y2: int, x: int, width: int=1):
+
+def create_V_tunnel(grid: list[list[int]], y1: int, y2: int, x: int, width: int = 1) -> None:
+    """Creates an tunnel going from one room down to another.
+
+    Args:
+        grid (list[list[int]]): map of the level
+        x1 (int): _description_
+        x2 (int): _description_
+        y (int): Length of the tunnel/corridor
+        width (int, optional): Width of the tunnel/corridor. Defaults to 1.
+    """
     # ... (Keep implementation as before) ...
-    map_height = len(grid)
-    map_width = len(grid[0])
+    map_height: int = len(grid)
+    map_width: int = len(grid[0])
     for y in range(min(y1, y2), max(y1, y2) + 1):
-         for i in range(width):
-            tunnel_x = x + i - (width // 2)
+        for i in range(width):
+            tunnel_x: int = x + i - (width // 2)
             # Stay away from map edges slightly for tunnels
             if 1 <= y < map_height - 1 and 1 <= tunnel_x < map_width - 1:
-                 grid[y][tunnel_x] = TILE_FLOOR
+                grid[y][tunnel_x] = TILE_FLOOR
 
 
 # --- NEW: Drunkard's Walk Implementation ---
-def generate_drunkards_walk(config: dict[Any, Any]):
+def generate_drunkards_walk(config: dict[str, Any]) -> list[list[int]]:
     """ Generates a cave/maze grid using the Drunkard's Walk algorithm. """
-    layout_conf = config['layout']
+    layout_conf: dict[str, Any] = config['layout']
     drunkard_conf = layout_conf['drunkard_params']
-    
-    width = layout_conf['map_width']
-    height = layout_conf['map_height']
-    grid = [[TILE_WALL for _ in range(width)] for _ in range(height)]
-    
+
+    width: int = layout_conf['map_width']
+    height: int = layout_conf['map_height']
+    grid: list[list[int]] = [
+        [TILE_WALL for _ in range(width)] for _ in range(height)]
+
     # Calculate target steps based on percentage
-    total_tiles = width * height
-    target_floor_tiles = int(total_tiles * drunkard_conf['target_floor_percent'])
-    
+    total_tiles: int = width * height
+    target_floor_tiles = int(
+        total_tiles * drunkard_conf['target_floor_percent'])
+
     # Determine start position
     if drunkard_conf['start_pos'] == "center":
-        current_x = width // 2
-        current_y = height // 2
+        current_x: int = width // 2
+        current_y: int = height // 2
     elif drunkard_conf['start_pos'] == "random":
         current_x = random.randint(1, width - 2)
         current_y = random.randint(1, height - 2)
-    else: # Assume specific coordinates if provided (add error checking later)
-        current_x, current_y = drunkard_conf['start_pos'] 
-        current_x = max(1, min(width - 2, current_x)) # Clamp to valid bounds
+    else:  # Assume specific coordinates if provided (add error checking later)
+        current_x, current_y = drunkard_conf['start_pos']
+        current_x = max(1, min(width - 2, current_x))  # Clamp to valid bounds
         current_y = max(1, min(height - 2, current_y))
 
     floor_tiles_created = 0
-    
+
     # Store previous direction for bias (0:N, 1:E, 2:S, 3:W)
-    last_direction = random.randint(0, 3) 
-    directions = [(0, -1), (1, 0), (0, 1), (-1, 0)] # N, E, S, W coordinate changes
+    last_direction: int = random.randint(0, 3)
+    directions: list[tuple[int, int]] = [
+        (0, -1), (1, 0), (0, 1), (-1, 0)]  # N, E, S, W coordinate changes
 
     while floor_tiles_created < target_floor_tiles:
         # Carve current position if it's a wall
@@ -90,18 +143,18 @@ def generate_drunkards_walk(config: dict[Any, Any]):
             floor_tiles_created += 1
 
         # Determine next direction
-        straight_bias = drunkard_conf['straight_bias']
+        straight_bias: float = drunkard_conf['straight_bias']
         if random.random() < straight_bias:
-             # Try to continue straight
-             chosen_direction = last_direction
+            # Try to continue straight
+            chosen_direction = last_direction
         else:
             # Choose a new random direction (could be same as last)
             chosen_direction = random.randint(0, 3)
-            
+
         # Get potential new coordinates
         dx, dy = directions[chosen_direction]
-        next_x = current_x + dx
-        next_y = current_y + dy
+        next_x: int = current_x + dx
+        next_y: int = current_y + dy
 
         # Boundary Check: Stay within 1 tile of the edge
         if 1 <= next_x < width - 1 and 1 <= next_y < height - 1:
@@ -110,7 +163,7 @@ def generate_drunkards_walk(config: dict[Any, Any]):
             last_direction = chosen_direction
         else:
             # Hit boundary (or near boundary), choose a completely new random direction next time
-            last_direction = random.randint(0, 3) 
+            last_direction = random.randint(0, 3)
             # Optional: Could try turning instead of picking totally random,
             # or could stop if stuck too long. For now, just pick new direction.
 
@@ -118,46 +171,51 @@ def generate_drunkards_walk(config: dict[Any, Any]):
 
 
 # --- MODIFIED: Main Dispatcher Function ---
-def generate_level(config: dict[Any, Any]):
+def generate_level(config: dict[Any, Any]) -> list[list[int]]:
     """ 
     Generates a level grid based on the algorithm specified in the config.
     Acts as a dispatcher to different generation functions.
     """
-    algorithm = config.get('algorithm', 'random_room_placement') # Default if key missing
+    algorithm: str = config.get(
+        'algorithm', 'random_room_placement')  # Default if key missing
 
     if algorithm == 'random_room_placement':
-        return generate_random_rooms(config) # Call the original function (renamed)
+        # Call the original function (renamed)
+        return generate_random_rooms(config)
     elif algorithm == 'drunkards_walk':
         return generate_drunkards_walk(config)
     # --- Add calls to other algorithms like BSP Tree or Cellular Automata here ---
     # elif algorithm == 'bsp_tree':
-    #    return generate_bsp(config) 
+    #    return generate_bsp(config)
     else:
-        print(f"Warning: Unknown algorithm '{algorithm}'. Using default random_room_placement.")
+        print(
+            f"Warning: Unknown algorithm '{algorithm}'. Using default random_room_placement.")
         return generate_random_rooms(config)
 
 
 # --- RENAMED: Original Room Placement Function ---
-def generate_random_rooms(config: dict[Any, Any]):
+def generate_random_rooms(config: dict[Any, Any]) -> list[list[int]]:
     """ Generates a dungeon level grid using random room placement. """
     # --- (Implementation is exactly the same as the previous generate_level) ---
-    layout_conf = config['layout']
-    width = layout_conf['map_width']
-    height = layout_conf['map_height']
-    grid = [[TILE_WALL for _ in range(width)] for _ in range(height)]
+    layout_conf: dict[str, Any] = config['layout']
+    width: int = layout_conf['map_width']
+    height: int = layout_conf['map_height']
+    grid: list[list[int]] = [
+        [TILE_WALL for _ in range(width)] for _ in range(height)]
     rooms: list[Rect] = []
     num_rooms = 0
     # ... (Rest of the room placement and corridor connection logic) ...
-    max_rooms = layout_conf['max_rooms']
-    room_min_size = layout_conf['room_size_min']
-    room_max_size = layout_conf['room_size_max']
-    
-    for _ in range(max_rooms * 2): 
-        if num_rooms >= max_rooms: break
-        w = random.randint(room_min_size, room_max_size)
-        h = random.randint(room_min_size, room_max_size)
-        x = random.randint(1, width - w - 2) # Keep rooms away from edge
-        y = random.randint(1, height - h - 2)
+    max_rooms: int = layout_conf['max_rooms']
+    room_min_size: int = layout_conf['room_size_min']
+    room_max_size: int = layout_conf['room_size_max']
+
+    for _ in range(max_rooms * 2):
+        if num_rooms >= max_rooms:
+            break
+        w: int = random.randint(room_min_size, room_max_size)
+        h: int = random.randint(room_min_size, room_max_size)
+        x: int = random.randint(1, width - w - 2)  # Keep rooms away from edge
+        y: int = random.randint(1, height - h - 2)
         new_room = Rect(x, y, w, h)
         failed = False
         for other_room in rooms:
@@ -170,15 +228,15 @@ def generate_random_rooms(config: dict[Any, Any]):
             rooms.append(new_room)
             num_rooms += 1
 
-    corridor_width = layout_conf['corridor_width']
+    corridor_width: int = layout_conf['corridor_width']
     for i in range(1, len(rooms)):
         (prev_x, prev_y) = rooms[i-1].center()
         (new_x, new_y) = rooms[i].center()
         if random.randint(0, 1) == 1:
-            create_h_tunnel(grid, prev_x, new_x, prev_y, corridor_width)
-            create_v_tunnel(grid, prev_y, new_y, new_x, corridor_width)
+            create_H_tunnel(grid, prev_x, new_x, prev_y, corridor_width)
+            create_V_tunnel(grid, prev_y, new_y, new_x, corridor_width)
         else:
-            create_v_tunnel(grid, prev_y, new_y, prev_x, corridor_width)
-            create_h_tunnel(grid, prev_x, new_x, new_y, corridor_width)
-            
+            create_V_tunnel(grid, prev_y, new_y, prev_x, corridor_width)
+            create_H_tunnel(grid, prev_x, new_x, new_y, corridor_width)
+
     return grid

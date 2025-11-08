@@ -8,5 +8,16 @@
     "python.analysis.typeCheckingMode": "strict",
     "python.analysis.typeEvaluation.deprecateTypingAliases": true,
     "python.analysis.typeEvaluation.disableBytesTypePromotions": true,
-    "python.analysis.typeEvaluation.enableReachabilityAnalysis": true
+    "python.analysis.typeEvaluation.enableReachabilityAnalysis": true,
+    "explorer.excludeGitIgnore": true,
+    "pylint.args": [
+        "--extension-pkg-allow=pygame",
+        "--generated-member=response"
+    ],
+    "conventionalCommits.scopes": [
+        "llm",
+        "main",
+        "assets",
+        "pcg"
+    ]
 }
