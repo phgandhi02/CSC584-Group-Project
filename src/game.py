@@ -111,6 +111,15 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
                 break
+
+            # -------------------------------- Start Menu -------------------------------- #
+            elif self.game_state == "start_menu":
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    self.game_state = "game"
+                    break
+
+            # ------------------------------- Game Started ------------------------------- #
+            # elif user presses a key then handle accordingly.
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
@@ -141,7 +150,13 @@ class Game:
         # Drawing
         if not self.running:
             return
-        self.game_renderer.draw_level(self.level_grid)
+        if self.game_state == "start_menu":
+            self._game_renderer.draw_start_menu()
+        elif self.game_state == "game_over":
+            # self.game_renderer.draw_game_over_screen()
+            pass
+        else:
+            self._game_renderer.draw_level(self.level_grid)
         pygame.display.flip()  # Update the full screen
 
     def on_cleanup(self):

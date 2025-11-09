@@ -51,3 +51,26 @@ class Renderer:
                 elif tile == TILE_FLOOR:
                     pygame.draw.rect(self.screen, COLOR_LIGHT_GREY, rect)
                 # Add more tile types (enemies, treasure) later with different colors/sprites
+
+    def draw_start_menu(self):
+        """
+        Draw Start Menu for Game.
+        """
+        self.screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("arial", 40)
+        title = font.render("My Game", True, (255, 255, 255))
+        start_button = font.render("Start", True, (255, 255, 255))
+        self.screen.blit(
+            title,
+            (
+                self.screen_width / 2 - title.get_width() / 2,
+                self.screen_height / 2 - title.get_height() / 2,
+            ),
+        )
+        self.screen.blit(
+            start_button,
+            (
+                self.screen_width / 2 - start_button.get_width() / 2,
+                self.screen_height / 2 + start_button.get_height() / 2,
+            ),
+        )
