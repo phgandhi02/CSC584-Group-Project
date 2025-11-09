@@ -12,12 +12,14 @@
     "explorer.excludeGitIgnore": true,
     "pylint.args": [
         "--extension-pkg-allow=pygame",
-        "--generated-member=response"
+        "--generated-member=response",
     ],
     "conventionalCommits.scopes": [
         "llm",
         "main",
         "assets",
-        "pcg"
+        "pcg",
+        "game",
+        "renderer"
     ]
 }
