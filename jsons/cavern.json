@@ -1,0 +1,44 @@
+{
+  "algorithm": "cellular_automata",
+  "layout": {
+    "map_width": 60,
+    "map_height": 40,
+    "cellular_params": {
+      "initial_wall_probability": 0.55,
+      "iterations": 4,
+      "birth_limit": 4,
+      "death_limit": 3
+    }
+  },
+  "content": {
+    "enemy_density": 0.08,
+    "treasure_density": 0.05,
+    "trap_density": 0.02,
+    "enemy_types": ["bat", "slime"],
+    "treasure_types": ["gem", "chest"]
+  },
+  "aesthetic": {
+    "theme": "cave",
+    "lighting_level": 0.3
+  },
+  "mission": {
+    "mission_type": "exploration",
+    "objectives": [
+      {
+        "objective_type": "treasure",
+        "placement_rule": "dead_end",
+        "count": 5,
+        "description": "Discover ancient cave treasures"
+      },
+      {
+        "objective_type": "secret",
+        "placement_rule": "hidden",
+        "count": 2,
+        "description": "Find secret chambers"
+      }
+    ],
+    "difficulty_progression": "flat",
+    "description": "Explore the cavern network and uncover its secrets"
+  }
+}
+

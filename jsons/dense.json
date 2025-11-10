@@ -9,8 +9,33 @@
     "corridor_width": 1        
   },
   "content": { 
-    "enemy_density": 0.15, "treasure_density": 0.03, "trap_density": 0.05, 
-    "enemy_types": ["goblin"], "treasure_types": ["gold_coin"] 
+    "enemy_density": 0.15,
+    "treasure_density": 0.03,
+    "trap_density": 0.05, 
+    "enemy_types": ["goblin"],
+    "treasure_types": ["gold_coin"] 
   },
-  "aesthetic": { "theme": "default_dungeon", "lighting_level": 0.3 }
+  "aesthetic": {
+    "theme": "default_dungeon",
+    "lighting_level": 0.3
+  },
+  "mission": {
+    "mission_type": "survival",
+    "objectives": [
+      {
+        "objective_type": "safe_room",
+        "placement_rule": "checkpoint",
+        "count": 3,
+        "description": "Find refuge from the swarm"
+      },
+      {
+        "objective_type": "treasure",
+        "placement_rule": "hidden",
+        "count": 2,
+        "description": "Grab loot while evading enemies"
+      }
+    ],
+    "difficulty_progression": "increasing",
+    "description": "Survive the dense enemy-filled dungeon"
+  }
 }

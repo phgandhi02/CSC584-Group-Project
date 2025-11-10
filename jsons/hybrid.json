@@ -1,0 +1,50 @@
+{
+  "algorithm": "hybrid_rooms_caves",
+  "layout": {
+    "map_width": 60,
+    "map_height": 40,
+    "max_rooms": 12,
+    "room_size_min": 5,
+    "room_size_max": 10,
+    "corridor_width": 1
+  },
+  "content": {
+    "enemy_density": 0.1,
+    "treasure_density": 0.06,
+    "trap_density": 0.03,
+    "enemy_types": ["goblin", "orc", "bat"],
+    "treasure_types": ["gold_coin", "chest", "gem"]
+  },
+  "aesthetic": {
+    "theme": "default_dungeon",
+    "lighting_level": 0.4
+  },
+  "mission": {
+    "mission_type": "multi_objective",
+    "objectives": [
+      {
+        "objective_type": "miniboss",
+        "placement_rule": "central_room",
+        "count": 2,
+        "description": "Defeat dungeon guardians"
+      },
+      {
+        "objective_type": "treasure",
+        "placement_rule": "dead_end",
+        "count": 3,
+        "description": "Collect scattered loot"
+      },
+      {
+        "objective_type": "puzzle",
+        "placement_rule": "random_room",
+        "count": 1,
+        "description": "Solve the ancient mechanism"
+      }
+    ],
+    "difficulty_progression": "increasing",
+    "description": "Complete multiple objectives in this varied dungeon"
+  }
+}
+
+
+

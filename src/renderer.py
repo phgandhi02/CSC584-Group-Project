@@ -6,12 +6,10 @@ TILE_WALL = 0
 TILE_FLOOR = 1
 
 COLOR_BLACK: tuple[Literal[0], Literal[0], Literal[0]] = (0, 0, 0)
-COLOR_DARK_GREY: tuple[Literal[50], Literal[50],
-                       Literal[50]] = (50, 50, 50)  # Wall color
-COLOR_LIGHT_GREY: tuple[Literal[150], Literal[150],
-                        Literal[150]] = (150, 150, 150)  # Floor color
+COLOR_DARK_GREY: tuple[Literal[50], Literal[50], Literal[50]] = (50, 50, 50)
+COLOR_LIGHT_GREY: tuple[Literal[150], Literal[150], Literal[150]] = (150, 150, 150)
 
-TILE_SIZE = 10  # Pixels per tile
+TILE_SIZE = 20  # Increased for better visibility
 
 
 class Renderer:

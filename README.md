@@ -1,5 +1,66 @@
-# README
-This repository contains the source code for my CSC584 Building Game AI project. The project objective is to create a rogue-like game that uses procedural content generation (PCG) techniques to generate levels. The PCG requires parameters that need to be tuned for achieving a certain look. The parameters can be tuned using a LLM that will take information from the user and generate the appropriate parameter weights accordingly. 
+# DunGen - LLM-Driven PCG Roguelike
+
+CSC584 Building Game AI Project
+
+A roguelike game that uses Procedural Content Generation (PCG) and LLMs to generate levels from text descriptions.
+
+**6 PCG Algorithms:** 4 pure + 2 smart hybrids for maximum variety
+
+**⭐ NEW: Mission-Driven Geometry** - The LLM now designs missions that directly influence level structure! Boss fights get boss arenas, treasure hunts get more branches, escape missions get checkpoints.
+
+## Usage
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run game
+python main.py
+```
+
+**How to use:**
+- Enter 1-6 for quick setting selection
+- Or describe the **setting/atmosphere** (LLM will invent the mission!):
+  - **"dark ancient dragon's lair"** → LLM invents boss fight mission + creates arena
+  - **"sprawling underground cave network"** → LLM invents exploration + adds branches
+  - **"crumbling dangerous ruins"** → LLM invents survival mission + adds checkpoints
+  - **"mysterious forgotten catacombs"** → LLM invents treasure hunt + structures layout
+  - Be descriptive about the PLACE and MOOD - the LLM designs the mission AND adjusts geometry!
+
+**Controls:** Arrow keys, SPACE to regenerate, ESC to exit
+
+**Logs:** All generations saved to `logs/` folder with timestamps.
+
+## Testing
+
+**Run all tests:**
+```bash
+python run_tests.py
+```
+
+**5 Test Suites** - All passing:
+- ✓ **PCG Algorithms** (6/6) - All 6 algorithms generate valid levels
+- ✓ **LLM Targeted Prompts** (90%) - LLM correctly interprets specific requests
+- ✓ **LLM Bias** (PASS) - LLM shows variety, 4+ algorithms used, no dominance  
+- ✓ **Config Validation** (5/5) - Parameters stay within valid ranges
+- ✓ **Mission System** (4/4) - Missions design experiences and adjust geometry
+
+**Individual tests:**
+```bash
+python tests/test_pcg_algorithms.py     # Test all 6 PCG algorithms
+python tests/test_llm_prompts.py        # Test targeted prompts (90% accuracy)
+python tests/test_mission_system.py     # Test mission-driven generation
+python tests/test_config_validation.py  # Validate parameter ranges
+python tests/test_llm_generation.py     # Compare LLM models
+```
+
+**Setup test models:**
+```bash
+.\setup_test_models.ps1  # Windows
+./setup_test_models.sh   # Linux/Mac
+```
+
+--- 
 
 ## Setup LLM
 
@@ -21,6 +82,14 @@ ollama run <model-name>
 
 The project uses port 11434 by default to connect to the LLM server. Make sure that the port is open and accessible. This port may be occupied by other apps such as Docker containers, so ensure that there are no conflicts.
 
+### Recommended Models
+
+Default: **llama3.2:3b** (fast, 2-4 seconds per generation)
+
+Alternatives: **gemma2:2b**, **qwen2.5**
+
+⚠️ **Avoid reasoning models** (deepseek-r1, etc.) - they are 20x slower.
+
 ## Relevant Repos
 - https://github.com/1allan/tower-of-bullets
 - https://github.com/VictorHachard/pygame-roguelike
@@ -35,6 +104,7 @@ The project uses port 11434 by default to connect to the LLM server. Make sure t
 ## Relevant Articles
 - https://slsdo.github.io/procedural-dungeon/
 - http://pcg.wikidot.com/pcg-algorithm:dungeon-generation (many resources in here)
+
 
 
 ## References:
