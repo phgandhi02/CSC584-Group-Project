@@ -1,8 +1,8 @@
 """
 Module for generating schema for PCG based on user text input. The LLM will be
-prompted with the use's text and a schema for the desired JSON output. Its 
-task is to translate qualitative descriptions (e.g., "scary," "open," 
-"treasure-filled") into a quantitative set of parameters. For example, the 
+prompted with the use's text and a schema for the desired JSON output. Its
+task is to translate qualitative descriptions (e.g., "scary," "open,"
+"treasure-filled") into a quantitative set of parameters. For example, the
 input "a dark, claustrophobic dungeon" might yield the following JSON:
 
     {"corridor width": 0.2,
@@ -27,68 +27,130 @@ DEFAULT_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
 
 class DrunkardParams(BaseModel):
     """Parameters specific to the Drunkard's Walk algorithm."""
-    target_floor_percent: float = Field(ge=0.2, le=0.5, description="Percentage of map that should be floor (0.2-0.5 for interesting caves)")
-    start_pos: str | tuple[int, int] = Field(default="center", description="Starting position: 'center', 'random', or [x, y] coordinates")
-    straight_bias: float = Field(ge=0.0, le=1.0, description="Probability of continuing in same direction (0.0 to 1.0)")
+
+    target_floor_percent: float = Field(
+        ge=0.2,
+        le=0.5,
+        description="Percentage of map that should be floor (0.2-0.5 for interesting caves)",
+    )
+    start_pos: str | tuple[int, int] = Field(
+        default="center",
+        description="Starting position: 'center', 'random', or [x, y] coordinates",
+    )
+    straight_bias: float = Field(
+        ge=0.0,
+        le=1.0,
+        description="Probability of continuing in same direction (0.0 to 1.0)",
+    )
 
 
 class CellularParams(BaseModel):
     """Parameters specific to Cellular Automata algorithm."""
-    initial_wall_probability: float = Field(ge=0.45, le=0.60, default=0.52, description="Initial wall probability (0.45-0.60, higher = more walls)")
-    iterations: int = Field(ge=3, le=6, default=4, description="Number of CA iterations (3-6)")
-    birth_limit: int = Field(ge=3, le=5, default=4, description="Wall neighbors needed to birth floor")
-    death_limit: int = Field(ge=2, le=4, default=3, description="Wall neighbors needed to kill floor")
+
+    initial_wall_probability: float = Field(
+        ge=0.45,
+        le=0.60,
+        default=0.52,
+        description="Initial wall probability (0.45-0.60, higher = more walls)",
+    )
+    iterations: int = Field(
+        ge=3, le=6, default=4, description="Number of CA iterations (3-6)"
+    )
+    birth_limit: int = Field(
+        ge=3, le=5, default=4, description="Wall neighbors needed to birth floor"
+    )
+    death_limit: int = Field(
+        ge=2, le=4, default=3, description="Wall neighbors needed to kill floor"
+    )
 
 
 class RoomPlacementLayout(BaseModel):
     """Layout parameters for random room placement algorithm."""
-    map_width: int = Field(ge=40, le=80, description="Width of the map (40-80 for good screen fit)")
-    map_height: int = Field(ge=30, le=50, description="Height of the map (30-50 for good screen fit)")
-    max_rooms: int = Field(ge=8, le=25, description="Maximum number of rooms to generate")
+
+    map_width: int = Field(
+        ge=40, le=80, description="Width of the map (40-80 for good screen fit)"
+    )
+    map_height: int = Field(
+        ge=30, le=50, description="Height of the map (30-50 for good screen fit)"
+    )
+    max_rooms: int = Field(
+        ge=8, le=25, description="Maximum number of rooms to generate"
+    )
     room_size_min: int = Field(ge=4, le=10, description="Minimum room size")
     room_size_max: int = Field(ge=6, le=15, description="Maximum room size")
-    corridor_width: int = Field(ge=1, le=3, description="Width of corridors connecting rooms")
+    corridor_width: int = Field(
+        ge=1, le=3, description="Width of corridors connecting rooms"
+    )
 
 
 class DrunkardWalkLayout(BaseModel):
     """Layout parameters for drunkard's walk algorithm."""
-    map_width: int = Field(ge=40, le=80, description="Width of the map (40-80 for good screen fit)")
-    map_height: int = Field(ge=30, le=50, description="Height of the map (30-50 for good screen fit)")
+
+    map_width: int = Field(
+        ge=40, le=80, description="Width of the map (40-80 for good screen fit)"
+    )
+    map_height: int = Field(
+        ge=30, le=50, description="Height of the map (30-50 for good screen fit)"
+    )
     drunkard_params: DrunkardParams
 
 
 class CellularLayout(BaseModel):
     """Layout parameters for cellular automata algorithm."""
-    map_width: int = Field(ge=40, le=80, description="Width of the map (40-80 for good screen fit)")
-    map_height: int = Field(ge=30, le=50, description="Height of the map (30-50 for good screen fit)")
+
+    map_width: int = Field(
+        ge=40, le=80, description="Width of the map (40-80 for good screen fit)"
+    )
+    map_height: int = Field(
+        ge=30, le=50, description="Height of the map (30-50 for good screen fit)"
+    )
     cellular_params: CellularParams
 
 
 class Content(BaseModel):
     """Content parameters for enemies, treasures, and traps."""
-    enemy_density: float = Field(ge=0.0, le=1.0, description="Density of enemies (0.0 to 1.0)")
-    treasure_density: float = Field(ge=0.0, le=1.0, description="Density of treasure (0.0 to 1.0)")
-    trap_density: float = Field(ge=0.0, le=1.0, description="Density of traps (0.0 to 1.0)")
-    enemy_types: list[str] = Field(description="Types of enemies (e.g., 'goblin', 'orc', 'bat', 'slime')")
-    treasure_types: list[str] = Field(description="Types of treasure (e.g., 'gold_coin', 'chest', 'gem', 'potion_small')")
+
+    enemy_density: float = Field(
+        ge=0.0, le=1.0, description="Density of enemies (0.0 to 1.0)"
+    )
+    treasure_density: float = Field(
+        ge=0.0, le=1.0, description="Density of treasure (0.0 to 1.0)"
+    )
+    trap_density: float = Field(
+        ge=0.0, le=1.0, description="Density of traps (0.0 to 1.0)"
+    )
+    enemy_types: list[str] = Field(
+        description="Types of enemies (e.g., 'goblin', 'orc', 'bat', 'slime')"
+    )
+    treasure_types: list[str] = Field(
+        description="Types of treasure (e.g., 'gold_coin', 'chest', 'gem', 'potion_small')"
+    )
 
 
 class Aesthetic(BaseModel):
     """Aesthetic parameters for theme and lighting."""
-    theme: str = Field(description="Theme name (e.g., 'default_dungeon', 'cave', 'stone_fortress')")
-    lighting_level: float = Field(ge=0.0, le=1.0, description="Lighting level (0.0 = dark, 1.0 = bright)")
+
+    theme: str = Field(
+        description="Theme name (e.g., 'default_dungeon', 'cave', 'stone_fortress')"
+    )
+    lighting_level: float = Field(
+        ge=0.0, le=1.0, description="Lighting level (0.0 = dark, 1.0 = bright)"
+    )
 
 
 class ObjectivePlacement(BaseModel):
     """Specification for where an objective should be placed."""
-    objective_type: Literal["boss", "treasure", "key", "safe_room", "puzzle", "miniboss", "secret"]
+
+    objective_type: Literal[
+        "boss", "treasure", "key", "safe_room", "puzzle", "miniboss", "secret"
+    ]
     placement_rule: Literal[
         "end_of_longest_path",  # Furthest from start
-        "dead_end",              # In a dead-end branch
-        "central_room",          # In largest/most central room
-        "hidden",                # Hard to find location
-        "checkpoint",            # Midway through level
-        "random_room"            # Any suitable room
+        "dead_end",  # In a dead-end branch
+        "central_room",  # In largest/most central room
+        "hidden",  # Hard to find location
+        "checkpoint",  # Midway through level
+        "random_room",  # Any suitable room
     ]
     count: int = Field(ge=1, le=5, description="How many of this objective")
     description: str = Field(description="What this objective represents")
@@ -96,14 +158,17 @@ class ObjectivePlacement(BaseModel):
 
 class Mission(BaseModel):
     """Mission structure - the experience/story the LLM designs."""
+
     mission_type: Literal[
-        "linear_progression",    # Start → challenges → boss
-        "exploration",           # Discover scattered treasures
-        "key_hunt",              # Find keys to unlock final area
-        "survival",              # Navigate dangerous areas to safe zones
-        "multi_objective"        # Multiple goals to complete
+        "linear_progression",  # Start → challenges → boss
+        "exploration",  # Discover scattered treasures
+        "key_hunt",  # Find keys to unlock final area
+        "survival",  # Navigate dangerous areas to safe zones
+        "multi_objective",  # Multiple goals to complete
     ]
-    objectives: list[ObjectivePlacement] = Field(min_items=1, max_items=6, description="Key objectives to place")
+    objectives: list[ObjectivePlacement] = Field(
+        min_items=1, max_items=6, description="Key objectives to place"
+    )
     difficulty_progression: Literal["flat", "increasing", "spike_at_end"] = Field(
         description="How difficulty changes through the level"
     )
@@ -112,6 +177,7 @@ class Mission(BaseModel):
 
 class BSPConfig(BaseModel):
     """Configuration for BSP algorithm (uses room placement layout)."""
+
     algorithm: Literal["bsp"] = Field(default="bsp")
     layout: RoomPlacementLayout
     content: Content
@@ -121,6 +187,7 @@ class BSPConfig(BaseModel):
 
 class RoomPlacementConfig(BaseModel):
     """Configuration for random room placement algorithm."""
+
     algorithm: Literal["random_room_placement"] = Field(default="random_room_placement")
     layout: RoomPlacementLayout
     content: Content
@@ -130,6 +197,7 @@ class RoomPlacementConfig(BaseModel):
 
 class DrunkardWalkConfig(BaseModel):
     """Configuration for drunkard's walk algorithm."""
+
     algorithm: Literal["drunkards_walk"] = Field(default="drunkards_walk")
     layout: DrunkardWalkLayout
     content: Content
@@ -139,6 +207,7 @@ class DrunkardWalkConfig(BaseModel):
 
 class CellularAutomataConfig(BaseModel):
     """Configuration for cellular automata algorithm."""
+
     algorithm: Literal["cellular_automata"] = Field(default="cellular_automata")
     layout: CellularLayout
     content: Content
@@ -147,6 +216,7 @@ class CellularAutomataConfig(BaseModel):
 
 class HybridRoomsCavesConfig(BaseModel):
     """Configuration for hybrid rooms+caves algorithm."""
+
     algorithm: Literal["hybrid_rooms_caves"] = Field(default="hybrid_rooms_caves")
     layout: RoomPlacementLayout
     content: Content
@@ -155,6 +225,7 @@ class HybridRoomsCavesConfig(BaseModel):
 
 class CellularRoomsConfig(BaseModel):
     """Configuration for cellular rooms algorithm."""
+
     algorithm: Literal["cellular_rooms"] = Field(default="cellular_rooms")
     layout: RoomPlacementLayout
     content: Content
@@ -163,6 +234,7 @@ class CellularRoomsConfig(BaseModel):
 
 class RandomRoomConfig(BaseModel):
     """Complete configuration returned by LLM for random room placement algorithm."""
+
     algorithm: Literal["random_room_placement"] = Field(default="random_room_placement")
     layout: RoomPlacementLayout
     content: Content
@@ -172,6 +244,7 @@ class RandomRoomConfig(BaseModel):
 
 class BSPConfig(BaseModel):
     """Complete configuration for BSP algorithm."""
+
     algorithm: Literal["bsp"] = Field(default="bsp")
     layout: RoomPlacementLayout
     content: Content
@@ -181,6 +254,7 @@ class BSPConfig(BaseModel):
 
 class DrunkardConfig(BaseModel):
     """Complete configuration for Drunkard's Walk algorithm."""
+
     algorithm: Literal["drunkards_walk"] = Field(default="drunkards_walk")
     layout: DrunkardWalkLayout
     content: Content
@@ -190,6 +264,7 @@ class DrunkardConfig(BaseModel):
 
 class CellularAutomataConfig(BaseModel):
     """Complete configuration for Cellular Automata algorithm."""
+
     algorithm: Literal["cellular_automata"] = Field(default="cellular_automata")
     layout: CellularLayout
     content: Content
@@ -199,6 +274,7 @@ class CellularAutomataConfig(BaseModel):
 
 class HybridRoomsCavesConfig(BaseModel):
     """Complete configuration for Hybrid Rooms+Caves algorithm."""
+
     algorithm: Literal["hybrid_rooms_caves"] = Field(default="hybrid_rooms_caves")
     layout: RoomPlacementLayout
     content: Content
@@ -208,6 +284,7 @@ class HybridRoomsCavesConfig(BaseModel):
 
 class CellularRoomsConfig(BaseModel):
     """Complete configuration for Cellular Rooms algorithm."""
+
     algorithm: Literal["cellular_rooms"] = Field(default="cellular_rooms")
     layout: CellularLayout
     content: Content
@@ -216,13 +293,20 @@ class CellularRoomsConfig(BaseModel):
 
 
 # Union type for all possible configs
-LevelConfig = RandomRoomConfig | BSPConfig | DrunkardConfig | CellularAutomataConfig | HybridRoomsCavesConfig | CellularRoomsConfig
+LevelConfig = (
+    RandomRoomConfig
+    | BSPConfig
+    | DrunkardConfig
+    | CellularAutomataConfig
+    | HybridRoomsCavesConfig
+    | CellularRoomsConfig
+)
 
 
 def get_available_models() -> list[str]:
     """
     Get list of available Ollama models on the local system.
-    
+
     Returns:
         list[str]: List of model names available locally
     """
@@ -230,23 +314,23 @@ def get_available_models() -> list[str]:
         response = ollama_list()
         # Handle both dict with 'models' key and direct list response
         if isinstance(response, dict):
-            models = response.get('models', [])
+            models = response.get("models", [])
         else:
             models = response
-        
+
         # Extract model names - handle different response structures
         model_names = []
         for model in models:
             # Try to get the model name from various sources
-            if hasattr(model, 'model'):  # Ollama Model object
+            if hasattr(model, "model"):  # Ollama Model object
                 model_names.append(model.model)
             elif isinstance(model, dict):
-                name = model.get('name') or model.get('model')
+                name = model.get("name") or model.get("model")
                 if name:
                     model_names.append(name)
             elif isinstance(model, str):
                 model_names.append(model)
-        
+
         return model_names
     except Exception as e:
         print(f"Warning: Could not fetch model list: {e}")
@@ -256,27 +340,29 @@ def get_available_models() -> list[str]:
 def select_model_interactive() -> str:
     """
     Prompt user to select a model from available models.
-    
+
     Returns:
         str: Selected model name
     """
     available_models = get_available_models()
-    
+
     if not available_models:
         print(f"No models found. Using default: {DEFAULT_MODEL}")
         return DEFAULT_MODEL
-    
+
     print("\nAvailable Ollama models:")
     for i, model in enumerate(available_models, 1):
         default_marker = " (default)" if model == DEFAULT_MODEL else ""
         print(f"{i}. {model}{default_marker}")
-    
+
     while True:
-        choice = input(f"\nSelect a model (1-{len(available_models)}) or press Enter for default [{DEFAULT_MODEL}]: ").strip()
-        
+        choice = input(
+            f"\nSelect a model (1-{len(available_models)}) or press Enter for default [{DEFAULT_MODEL}]: "
+        ).strip()
+
         if not choice:
             return DEFAULT_MODEL
-        
+
         try:
             idx = int(choice) - 1
             if 0 <= idx < len(available_models):
@@ -287,28 +373,39 @@ def select_model_interactive() -> str:
             print("Please enter a valid number")
 
 
-def generate_level_config(user_prompt: str, model: str = DEFAULT_MODEL, 
-                           prefer_algorithm: str | None = None, 
-                           save_log: bool = False) -> tuple[LevelConfig, dict]:
+def generate_level_config(
+    user_prompt: str,
+    model: str = DEFAULT_MODEL,
+    prefer_algorithm: str | None = None,
+    save_log: bool = False,
+) -> tuple[LevelConfig, dict[str, str | Any]]:
     """
     Generate a level configuration using the LLM.
-    
+
     Args:
         user_prompt: User description of desired level
         model: Ollama model to use
         prefer_algorithm: Prefer specific algorithm
         save_log: Whether to save the full response log
-    
+
     Returns:
         tuple: (config, log_data) where log_data contains prompt, response, thinking, etc.
     """
+
     # Step 1: LLM chooses the best algorithm
     class AlgorithmReasoning(BaseModel):
         """LLM's reasoning for algorithm choice."""
-        chosen_algorithm: Literal["random_room_placement", "bsp", "drunkards_walk", 
-                                   "cellular_automata", "hybrid_rooms_caves", "cellular_rooms"]
+
+        chosen_algorithm: Literal[
+            "random_room_placement",
+            "bsp",
+            "drunkards_walk",
+            "cellular_automata",
+            "hybrid_rooms_caves",
+            "cellular_rooms",
+        ]
         reason: str = Field(description="Why this algorithm fits the user's request")
-    
+
     algo_prompt = f"""You are a roguelike level designer. Analyze this request and choose the BEST algorithm.
 
 USER REQUEST: "{user_prompt}"
@@ -334,13 +431,13 @@ Choose ONE algorithm and explain why in 1-2 sentences."""
         messages=[{"role": "user", "content": algo_prompt}],
         format=AlgorithmReasoning.model_json_schema(),
     )
-    
+
     if not algo_response.message.content:
         raise ValueError("LLM returned empty algorithm reasoning")
-    
+
     reasoning = AlgorithmReasoning.model_validate_json(algo_response.message.content)
     chosen_algo = reasoning.chosen_algorithm
-    
+
     # Step 2: Generate parameters AND mission design for chosen algorithm
     param_prompt = f"""You are a roguelike level designer. The user described a SETTING/ATMOSPHERE.
 Your job: INVENT a fitting mission for that setting, then generate parameters.
@@ -408,20 +505,20 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
         "hybrid_rooms_caves": HybridRoomsCavesConfig,
         "cellular_rooms": CellularRoomsConfig,
     }
-    
+
     config_schema = schema_map[chosen_algo]
-    
+
     param_response = chat(
         model=model,
         messages=[{"role": "user", "content": param_prompt}],
         format=config_schema.model_json_schema(),
     )
-    
+
     if not param_response.message.content:
         raise ValueError("LLM returned empty parameters")
-    
+
     config = config_schema.model_validate_json(param_response.message.content)
-    
+
     # Build log data
     log_data = {
         "user_prompt": user_prompt,
@@ -431,71 +528,74 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
         "algo_prompt": algo_prompt,
         "param_prompt": param_prompt,
         "response_content": param_response.message.content,
-        "config": config.model_dump()
+        "config": config.model_dump(),
     }
-    
+
     # Save log if requested
     if save_log:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_dir = Path("logs")
         log_dir.mkdir(exist_ok=True)
-        
+
         log_file = log_dir / f"llm_generation_{timestamp}.json"
-        with open(log_file, 'w') as f:
+        with open(log_file, "w") as f:
             json.dump(log_data, f, indent=2)
-        
+
         print(f"Saved log to {log_file}")
-    
+
     return config, log_data
 
 
 # Test code - only runs when this file is executed directly
 if __name__ == "__main__":
     import json
-    
+
     print("=== LLM Level Generator Test ===")
-    
+
     # Select model
     selected_model = select_model_interactive()
     print(f"\nUsing model: {selected_model}")
-    
+
     # Get user prompt
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("Example prompts:")
     print("  - 'a dark, claustrophobic dungeon with many enemies'")
     print("  - 'a bright, open fortress with treasure rooms'")
     print("  - 'a scary cave system with winding passages'")
-    print("="*50)
-    
-    user_input = input("\nDescribe the level you want (or press Enter for default): ").strip()
+    print("=" * 50)
+
+    user_input = input(
+        "\nDescribe the level you want (or press Enter for default): "
+    ).strip()
     if not user_input:
         user_input = "a balanced dungeon level with moderate difficulty"
-    
+
     print(f"\nPrompt: {user_input}")
     print("\nGenerating level configuration...")
-    
+
     try:
         level_config, log_data = generate_level_config(user_input, model=selected_model)
-        
-        print("\n" + "="*50)
+
+        print("\n" + "=" * 50)
         print("Generated Level Configuration:")
-        print("="*50)
-        
+        print("=" * 50)
+
         # Convert to dict for pretty printing
         config_dict = level_config.model_dump()
         print(json.dumps(config_dict, indent=2))
-        
+
         # Offer to save
         save = input("\n\nSave this configuration? (y/n): ").strip().lower()
-        if save == 'y':
+        if save == "y":
             filename = input("Enter filename (without .json): ").strip()
             if filename:
                 filepath = f"jsons/{filename}.json"
-                with open(filepath, 'w', encoding='utf-8') as f:
+                with open(filepath, "w", encoding="utf-8") as f:
                     json.dump(config_dict, f, indent=2)
                 print(f"[SUCCESS] Saved to {filepath}")
-        
+
     except Exception as e:
         print(f"\n[ERROR] Error generating level: {e}")
         import traceback
+
         traceback.print_exc()
