@@ -45,25 +45,13 @@ class Game:
         """
         # initialize game variables
         self.running = True
-        self._cwd: Path = Path.cwd()
         self.game_state = "start_menu"
-
-        map_width: int | float = self.config["layout"]["map_width"]
-        map_height: int | float = self.config["layout"]["map_height"]
-        screen_width: int | float = map_width * TILE_SIZE
-        screen_height: int | float = map_height * TILE_SIZE
 
         # Initialize Pygame
         pygame.init()
 
-        # initialize pygame variables
-        self._window = pygame.display.set_mode((800, 600))
+        # Initialize Pygame Variables for Class Instance
         self._clock = pygame.time.Clock()
-        # --- Initialize Renderer ---
-        self._game_renderer = Renderer(int(screen_width), int(screen_height))
-
-        icon_path: Path = self._cwd / "assets" / "icon.png"
-        pygame.display.set_icon(pygame.image.load(icon_path))
 
     def run(self):
         """Game flow loop. Main high-level logic for game."""
@@ -168,6 +156,11 @@ class Game:
             # Load default config
             print("Loading default config...")
 
+        map_width: int = self.config["layout"]["map_width"]
+        map_height: int  = self.config["layout"]["map_height"]
+        screen_width: int = map_width * TILE_SIZE
+        screen_height: int = map_height * TILE_SIZE
+        self._game_renderer = Renderer(screen_width, screen_height)
         # --- 2. Generate Level ---
         try:
             # Adjust layout parameters based on mission (if present)
