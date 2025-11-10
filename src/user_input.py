@@ -138,7 +138,7 @@ def verify_config_mission(config: dict[str, Any]) -> dict[str, Any]:
         print("  MISSION-DRIVEN GEOMETRY ADJUSTMENTS")
         print("{'=' * 60}")
         # Show what changed
-        changes = []
+        changes: list[Any] = []
         for key in config["layout"]:
             if (
                 key in original_layout
