@@ -32,6 +32,7 @@ class Renderer:
     def __init__(self, screen_width: int, screen_height: int) -> None:
         self.screen_width: int = screen_width
         self.screen_height: int = screen_height
+        self.screen_margin_width  = 20
         self.screen: pygame.Surface = pygame.display.set_mode(
             (screen_width, screen_height)
         )
@@ -69,7 +70,7 @@ class Renderer:
         self.screen.blit(self._bkgd_im, (20,0))
         font = pygame.font.SysFont("arial", 40)
         title = font.render("DunGen", True, (255, 255, 255))
-        start_button = font.render("Start", True, (255, 255, 255))
+        start_button = font.render("Press Space to Start", True, (255, 255, 255))
         self.screen.blit(
             title,
             (
@@ -82,5 +83,27 @@ class Renderer:
             (
                 self.screen_width / 2 - start_button.get_width() / 2,
                 self.screen_height / 2 + start_button.get_height() / 2,
+            ),
+        )
+
+    def draw_selection_menu(self):
+        """
+        Draw Selection Menu for Game.
+        TODO: Not being called by the game object because
+        it is immediately goes to the game state.
+        """
+        self.screen.fill((0, 0, 0))
+        margin_offset = self.screen_margin_width
+        rect = pygame.Rect(margin_offset,margin_offset,
+                           self.screen_width - margin_offset, self.screen_height - margin_offset)
+        pygame.draw.rect(self.screen,(105,105,105), rect)
+        font = pygame.font.SysFont("arial", 40)
+        title = font.render("Select a default level description or " \
+            "write your own in the terminal.", True, (255, 255, 255))
+        self.screen.blit(
+            title,
+            (
+                self.screen_width / 2 - title.get_width() / 2,
+                self.screen_height / 2 - title.get_height() / 2,
             ),
         )
