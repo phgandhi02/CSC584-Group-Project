@@ -437,11 +437,11 @@ def generate_bsp(config: dict[str, Any]) -> list[list[int]]:
                 
                 # Create L-shaped corridor
                 if random.choice([True, False]):
-                    create_H_tunnel(grid, lx, rx, ly, corridor_width)
-                    create_V_tunnel(grid, ly, ry, rx, corridor_width)
+                    create_h_tunnel(grid, lx, rx, ly, corridor_width)
+                    create_v_tunnel(grid, ly, ry, rx, corridor_width)
                 else:
-                    create_V_tunnel(grid, ly, ry, lx, corridor_width)
-                    create_H_tunnel(grid, lx, rx, ry, corridor_width)
+                    create_v_tunnel(grid, ly, ry, lx, corridor_width)
+                    create_h_tunnel(grid, lx, rx, ry, corridor_width)
     
     def get_room_from_subtree(node: BSPNode) -> Rect | None:
         """Get a room from this node or its children."""
@@ -784,8 +784,8 @@ def generate_random_rooms(config: dict[Any, Any]) -> list[list[int]]:
         if room1_idx != room2_idx:
             (x1, y1) = rooms[room1_idx].center()
             (x2, y2) = rooms[room2_idx].center()
-            create_H_tunnel(grid, x1, x2, y1, corridor_width)
-            create_V_tunnel(grid, y1, y2, x2, corridor_width)
+            create_h_tunnel(grid, x1, x2, y1, corridor_width)
+            create_v_tunnel(grid, y1, y2, x2, corridor_width)
     
     # Clean up isolated areas
     grid = remove_isolated_areas(grid)
