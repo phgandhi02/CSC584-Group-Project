@@ -12,14 +12,18 @@ input "a dark, claustrophobic dungeon" might yield the following JSON:
 """
 
 import os
-import random
+import locale
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Literal, Optional, Any
+from typing import (
+    Literal,
+    Any,
+)  # for type-hinting. Also necessary for Pydantic model schema validation
 
-from ollama import chat, list as ollama_list  # type: ignore
-from pydantic import BaseModel, Field
+from ollama import ChatResponse, ListResponse, chat, list as ollama_list  # type: ignore
+from pydantic import BaseModel
+from pydantic import Field as PydanticField
 
 # Default model - can be overridden by environment variable
 DEFAULT_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
@@ -28,16 +32,16 @@ DEFAULT_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
 class DrunkardParams(BaseModel):
     """Parameters specific to the Drunkard's Walk algorithm."""
 
-    target_floor_percent: float = Field(
+    target_floor_percent: float = PydanticField(
         ge=0.2,
         le=0.5,
         description="Percentage of map that should be floor (0.2-0.5 for interesting caves)",
     )
-    start_pos: str | tuple[int, int] = Field(
+    start_pos: str | tuple[int, int] = PydanticField(
         default="center",
         description="Starting position: 'center', 'random', or [x, y] coordinates",
     )
-    straight_bias: float = Field(
+    straight_bias: float = PydanticField(
         ge=0.0,
         le=1.0,
         description="Probability of continuing in same direction (0.0 to 1.0)",
@@ -47,19 +51,19 @@ class DrunkardParams(BaseModel):
 class CellularParams(BaseModel):
     """Parameters specific to Cellular Automata algorithm."""
 
-    initial_wall_probability: float = Field(
+    initial_wall_probability: float = PydanticField(
         ge=0.45,
         le=0.60,
         default=0.52,
         description="Initial wall probability (0.45-0.60, higher = more walls)",
     )
-    iterations: int = Field(
+    iterations: int = PydanticField(
         ge=3, le=6, default=4, description="Number of CA iterations (3-6)"
     )
-    birth_limit: int = Field(
+    birth_limit: int = PydanticField(
         ge=3, le=5, default=4, description="Wall neighbors needed to birth floor"
     )
-    death_limit: int = Field(
+    death_limit: int = PydanticField(
         ge=2, le=4, default=3, description="Wall neighbors needed to kill floor"
     )
 
@@ -67,18 +71,18 @@ class CellularParams(BaseModel):
 class RoomPlacementLayout(BaseModel):
     """Layout parameters for random room placement algorithm."""
 
-    map_width: int = Field(
+    map_width: int = PydanticField(
         ge=40, le=80, description="Width of the map (40-80 for good screen fit)"
     )
-    map_height: int = Field(
+    map_height: int = PydanticField(
         ge=30, le=50, description="Height of the map (30-50 for good screen fit)"
     )
-    max_rooms: int = Field(
+    max_rooms: int = PydanticField(
         ge=8, le=25, description="Maximum number of rooms to generate"
     )
-    room_size_min: int = Field(ge=4, le=10, description="Minimum room size")
-    room_size_max: int = Field(ge=6, le=15, description="Maximum room size")
-    corridor_width: int = Field(
+    room_size_min: int = PydanticField(ge=4, le=10, description="Minimum room size")
+    room_size_max: int = PydanticField(ge=6, le=15, description="Maximum room size")
+    corridor_width: int = PydanticField(
         ge=1, le=3, description="Width of corridors connecting rooms"
     )
 
@@ -86,10 +90,10 @@ class RoomPlacementLayout(BaseModel):
 class DrunkardWalkLayout(BaseModel):
     """Layout parameters for drunkard's walk algorithm."""
 
-    map_width: int = Field(
+    map_width: int = PydanticField(
         ge=40, le=80, description="Width of the map (40-80 for good screen fit)"
     )
-    map_height: int = Field(
+    map_height: int = PydanticField(
         ge=30, le=50, description="Height of the map (30-50 for good screen fit)"
     )
     drunkard_params: DrunkardParams
@@ -98,10 +102,10 @@ class DrunkardWalkLayout(BaseModel):
 class CellularLayout(BaseModel):
     """Layout parameters for cellular automata algorithm."""
 
-    map_width: int = Field(
+    map_width: int = PydanticField(
         ge=40, le=80, description="Width of the map (40-80 for good screen fit)"
     )
-    map_height: int = Field(
+    map_height: int = PydanticField(
         ge=30, le=50, description="Height of the map (30-50 for good screen fit)"
     )
     cellular_params: CellularParams
@@ -110,19 +114,19 @@ class CellularLayout(BaseModel):
 class Content(BaseModel):
     """Content parameters for enemies, treasures, and traps."""
 
-    enemy_density: float = Field(
+    enemy_density: float = PydanticField(
         ge=0.0, le=1.0, description="Density of enemies (0.0 to 1.0)"
     )
-    treasure_density: float = Field(
+    treasure_density: float = PydanticField(
         ge=0.0, le=1.0, description="Density of treasure (0.0 to 1.0)"
     )
-    trap_density: float = Field(
+    trap_density: float = PydanticField(
         ge=0.0, le=1.0, description="Density of traps (0.0 to 1.0)"
     )
-    enemy_types: list[str] = Field(
+    enemy_types: list[str] = PydanticField(
         description="Types of enemies (e.g., 'goblin', 'orc', 'bat', 'slime')"
     )
-    treasure_types: list[str] = Field(
+    treasure_types: list[str] = PydanticField(
         description="Types of treasure (e.g., 'gold_coin', 'chest', 'gem', 'potion_small')"
     )
 
@@ -130,10 +134,10 @@ class Content(BaseModel):
 class Aesthetic(BaseModel):
     """Aesthetic parameters for theme and lighting."""
 
-    theme: str = Field(
+    theme: str = PydanticField(
         description="Theme name (e.g., 'default_dungeon', 'cave', 'stone_fortress')"
     )
-    lighting_level: float = Field(
+    lighting_level: float = PydanticField(
         ge=0.0, le=1.0, description="Lighting level (0.0 = dark, 1.0 = bright)"
     )
 
@@ -152,8 +156,8 @@ class ObjectivePlacement(BaseModel):
         "checkpoint",  # Midway through level
         "random_room",  # Any suitable room
     ]
-    count: int = Field(ge=1, le=5, description="How many of this objective")
-    description: str = Field(description="What this objective represents")
+    count: int = PydanticField(ge=1, le=5, description="How many of this objective")
+    description: str = PydanticField(description="What this objective represents")
 
 
 class Mission(BaseModel):
@@ -166,29 +170,21 @@ class Mission(BaseModel):
         "survival",  # Navigate dangerous areas to safe zones
         "multi_objective",  # Multiple goals to complete
     ]
-    objectives: list[ObjectivePlacement] = Field(
+    objectives: list[ObjectivePlacement] = PydanticField(  # type: ignore
         min_items=1, max_items=6, description="Key objectives to place"
+    )  # type: ignore
+    difficulty_progression: Literal["flat", "increasing", "spike_at_end"] = (
+        PydanticField(description="How difficulty changes through the level")
     )
-    difficulty_progression: Literal["flat", "increasing", "spike_at_end"] = Field(
-        description="How difficulty changes through the level"
-    )
-    description: str = Field(description="Brief mission narrative")
-
-
-class BSPConfig(BaseModel):
-    """Configuration for BSP algorithm (uses room placement layout)."""
-
-    algorithm: Literal["bsp"] = Field(default="bsp")
-    layout: RoomPlacementLayout
-    content: Content
-    aesthetic: Aesthetic
-    mission: Mission
+    description: str = PydanticField(description="Brief mission narrative")
 
 
 class RoomPlacementConfig(BaseModel):
     """Configuration for random room placement algorithm."""
 
-    algorithm: Literal["random_room_placement"] = Field(default="random_room_placement")
+    algorithm: Literal["random_room_placement"] = PydanticField(
+        default="random_room_placement"
+    )
     layout: RoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
@@ -198,44 +194,19 @@ class RoomPlacementConfig(BaseModel):
 class DrunkardWalkConfig(BaseModel):
     """Configuration for drunkard's walk algorithm."""
 
-    algorithm: Literal["drunkards_walk"] = Field(default="drunkards_walk")
+    algorithm: Literal["drunkards_walk"] = PydanticField(default="drunkards_walk")
     layout: DrunkardWalkLayout
     content: Content
     aesthetic: Aesthetic
     mission: Mission
 
 
-class CellularAutomataConfig(BaseModel):
-    """Configuration for cellular automata algorithm."""
-
-    algorithm: Literal["cellular_automata"] = Field(default="cellular_automata")
-    layout: CellularLayout
-    content: Content
-    aesthetic: Aesthetic
-
-
-class HybridRoomsCavesConfig(BaseModel):
-    """Configuration for hybrid rooms+caves algorithm."""
-
-    algorithm: Literal["hybrid_rooms_caves"] = Field(default="hybrid_rooms_caves")
-    layout: RoomPlacementLayout
-    content: Content
-    aesthetic: Aesthetic
-
-
-class CellularRoomsConfig(BaseModel):
-    """Configuration for cellular rooms algorithm."""
-
-    algorithm: Literal["cellular_rooms"] = Field(default="cellular_rooms")
-    layout: RoomPlacementLayout
-    content: Content
-    aesthetic: Aesthetic
-
-
 class RandomRoomConfig(BaseModel):
     """Complete configuration returned by LLM for random room placement algorithm."""
 
-    algorithm: Literal["random_room_placement"] = Field(default="random_room_placement")
+    algorithm: Literal["random_room_placement"] = PydanticField(
+        default="random_room_placement"
+    )
     layout: RoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
@@ -245,7 +216,7 @@ class RandomRoomConfig(BaseModel):
 class BSPConfig(BaseModel):
     """Complete configuration for BSP algorithm."""
 
-    algorithm: Literal["bsp"] = Field(default="bsp")
+    algorithm: Literal["bsp"] = PydanticField(default="bsp")
     layout: RoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
@@ -255,7 +226,7 @@ class BSPConfig(BaseModel):
 class DrunkardConfig(BaseModel):
     """Complete configuration for Drunkard's Walk algorithm."""
 
-    algorithm: Literal["drunkards_walk"] = Field(default="drunkards_walk")
+    algorithm: Literal["drunkards_walk"] = PydanticField(default="drunkards_walk")
     layout: DrunkardWalkLayout
     content: Content
     aesthetic: Aesthetic
@@ -265,7 +236,7 @@ class DrunkardConfig(BaseModel):
 class CellularAutomataConfig(BaseModel):
     """Complete configuration for Cellular Automata algorithm."""
 
-    algorithm: Literal["cellular_automata"] = Field(default="cellular_automata")
+    algorithm: Literal["cellular_automata"] = PydanticField(default="cellular_automata")
     layout: CellularLayout
     content: Content
     aesthetic: Aesthetic
@@ -275,7 +246,9 @@ class CellularAutomataConfig(BaseModel):
 class HybridRoomsCavesConfig(BaseModel):
     """Complete configuration for Hybrid Rooms+Caves algorithm."""
 
-    algorithm: Literal["hybrid_rooms_caves"] = Field(default="hybrid_rooms_caves")
+    algorithm: Literal["hybrid_rooms_caves"] = PydanticField(
+        default="hybrid_rooms_caves"
+    )
     layout: RoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
@@ -285,7 +258,7 @@ class HybridRoomsCavesConfig(BaseModel):
 class CellularRoomsConfig(BaseModel):
     """Complete configuration for Cellular Rooms algorithm."""
 
-    algorithm: Literal["cellular_rooms"] = Field(default="cellular_rooms")
+    algorithm: Literal["cellular_rooms"] = PydanticField(default="cellular_rooms")
     layout: CellularLayout
     content: Content
     aesthetic: Aesthetic
@@ -311,27 +284,27 @@ def get_available_models() -> list[str]:
         list[str]: List of model names available locally
     """
     try:
-        response = ollama_list()
+        response: ListResponse = ollama_list()  # type: ignore
         # Handle both dict with 'models' key and direct list response
         if isinstance(response, dict):
-            models = response.get("models", [])
+            models: dict[str, Any] = response.get("models", [])
         else:
-            models = response
+            models = response  # type: ignore
 
         # Extract model names - handle different response structures
-        model_names = []
+        model_names: list[str] = []
         for model in models:
             # Try to get the model name from various sources
             if hasattr(model, "model"):  # Ollama Model object
-                model_names.append(model.model)
+                model_names.append(model.model)  # type: ignore
             elif isinstance(model, dict):
-                name = model.get("name") or model.get("model")
+                name: str | None = model.get("name") or model.get("model")  # type: ignore
                 if name:
-                    model_names.append(name)
-            elif isinstance(model, str):
-                model_names.append(model)
-
+                    model_names.append(name)  # type: ignore
+            # elif isinstance(model, str):
+            #     model_names.append(model)
         return model_names
+
     except Exception as e:
         print(f"Warning: Could not fetch model list: {e}")
         return []
@@ -352,12 +325,15 @@ def select_model_interactive() -> str:
 
     print("\nAvailable Ollama models:")
     for i, model in enumerate(available_models, 1):
-        default_marker = " (default)" if model == DEFAULT_MODEL else ""
+        default_marker: Literal[" (default)"] | Literal[""] = (
+            " (default)" if model == DEFAULT_MODEL else ""
+        )
         print(f"{i}. {model}{default_marker}")
 
     while True:
         choice = input(
-            f"\nSelect a model (1-{len(available_models)}) or press Enter for default [{DEFAULT_MODEL}]: "
+            f"\nSelect a model (1-{len(available_models)}) or \
+            press Enter for default [{DEFAULT_MODEL}]: "
         ).strip()
 
         if not choice:
@@ -404,9 +380,12 @@ def generate_level_config(
             "hybrid_rooms_caves",
             "cellular_rooms",
         ]
-        reason: str = Field(description="Why this algorithm fits the user's request")
+        reason: str = PydanticField(
+            description="Why this algorithm fits the user's request"
+        )
 
-    algo_prompt = f"""You are a roguelike level designer. Analyze this request and choose the BEST algorithm.
+    algo_prompt = f"""You are a roguelike level designer. Analyze this
+        request and choose the BEST algorithm.
 
 USER REQUEST: "{user_prompt}"
 
@@ -425,6 +404,9 @@ IMPORTANT RULES:
 4. Don't over-use hybrid_rooms_caves - it's not always the best choice!
 
 Choose ONE algorithm and explain why in 1-2 sentences."""
+
+    if prefer_algorithm:
+        algo_prompt += "\nThe user prefers to use ${prefer_algorithm} as the algorithm."
 
     algo_response = chat(
         model=model,
@@ -497,7 +479,7 @@ IMPORTANT:
 Return ONLY valid JSON matching the schema for {chosen_algo}."""
 
     # Select the appropriate config schema
-    schema_map = {
+    schema_map: dict[str, Any] = {
         "random_room_placement": RandomRoomConfig,
         "bsp": BSPConfig,
         "drunkards_walk": DrunkardConfig,
@@ -506,9 +488,9 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
         "cellular_rooms": CellularRoomsConfig,
     }
 
-    config_schema = schema_map[chosen_algo]
+    config_schema: LevelConfig = schema_map[chosen_algo]
 
-    param_response = chat(
+    param_response: ChatResponse = chat(
         model=model,
         messages=[{"role": "user", "content": param_prompt}],
         format=config_schema.model_json_schema(),
@@ -517,10 +499,12 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
     if not param_response.message.content:
         raise ValueError("LLM returned empty parameters")
 
-    config = config_schema.model_validate_json(param_response.message.content)
+    config: LevelConfig = config_schema.model_validate_json(
+        param_response.message.content
+    )
 
     # Build log data
-    log_data = {
+    log_data: dict[str, Any] = {
         "user_prompt": user_prompt,
         "model": model,
         "algorithm": chosen_algo,
@@ -528,7 +512,7 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
         "algo_prompt": algo_prompt,
         "param_prompt": param_prompt,
         "response_content": param_response.message.content,
-        "config": config.model_dump(),
+        "config": config.model_dump(),  # type: ignore
     }
 
     # Save log if requested
@@ -538,8 +522,8 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
         log_dir.mkdir(exist_ok=True)
 
         log_file = log_dir / f"llm_generation_{timestamp}.json"
-        with open(log_file, "w") as f:
-            json.dump(log_data, f, indent=2)
+        with open(log_file, "w", encoding=locale.getencoding()) as file:
+            json.dump(log_data, file, indent=2)
 
         print(f"Saved log to {log_file}")
 
@@ -548,8 +532,6 @@ Return ONLY valid JSON matching the schema for {chosen_algo}."""
 
 # Test code - only runs when this file is executed directly
 if __name__ == "__main__":
-    import json
-
     print("=== LLM Level Generator Test ===")
 
     # Select model

@@ -12,7 +12,7 @@
     "explorer.excludeGitIgnore": true,
     "pylint.args": [
         "--extension-pkg-allow=pygame",
-        "--generated-member=response",
+        "--generated-member=response,algo_response,param_response",
     ],
     "conventionalCommits.scopes": [
         "llm",
