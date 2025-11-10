@@ -44,13 +44,27 @@ class Renderer:
         pygame.display.set_icon(pygame.image.load(self._assets_path / "icon.png"))
         self._bkgd_im = pygame.image.load(self._assets_path / "startmenu.png")
 
-    def draw_level(self, grid: list[list[int]]) -> None:
-        """Draws the entire level grid onto the screen."""
+        # Load and cache player sprite
+        self._player_sprite = pygame.image.load(self._assets_path / "guy.png")
+        self._player_sprite = pygame.transform.scale(
+            self._player_sprite, (TILE_SIZE, TILE_SIZE)
+        )
+
+    def draw_level(
+        self, grid: list[list[int]], player_pos: tuple[int, int] | None = None
+    ) -> None:
+        """Draws the entire level grid and player onto the screen.
+
+        Args:
+            grid: 2D list representing the level layout
+            player_pos: Optional tuple of (x, y) grid coordinates for player position
+        """
         self.screen.fill(COLOR_BLACK)  # Clear screen
 
         map_height: int = len(grid)
         map_width: int = len(grid[0])
 
+        # Draw level tiles
         for y in range(map_height):
             for x in range(map_width):
                 tile: int = grid[y][x]
@@ -61,6 +75,13 @@ class Renderer:
                 elif tile == TILE_FLOOR:
                     pygame.draw.rect(self.screen, COLOR_LIGHT_GREY, rect)
                 # Add more tile types (enemies, treasure) later with different colors/sprites
+
+        # Draw player sprite on top of the level
+        if player_pos is not None:
+            player_x, player_y = player_pos
+            player_pixel_x = player_x * TILE_SIZE
+            player_pixel_y = player_y * TILE_SIZE
+            self.screen.blit(self._player_sprite, (player_pixel_x, player_pixel_y))
 
     def draw_start_menu(self):
         """
