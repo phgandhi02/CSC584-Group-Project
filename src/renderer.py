@@ -3,7 +3,7 @@ Contains Renderer object which renders the game and the map. Contains int
 values for each tile for the map. Map is represented as a list[list[int]].
 
 """
-
+from pathlib import Path
 from typing import Literal
 import pygame
 from pygame.font import Font
@@ -23,7 +23,7 @@ COLOR_LIGHT_GREY: tuple[Literal[150], Literal[150], Literal[150]] = (
     150,
 )  # Floor color
 
-TILE_SIZE = 20  # Increased for better visibility
+TILE_SIZE = 10  # Increased for better visibility
 
 
 class Renderer:
@@ -37,6 +37,11 @@ class Renderer:
         )
         # Basic font for any text later
         self.font: Font = pygame.font.SysFont(None, 24)
+        self._cwd: Path = Path.cwd()
+        self._assets_path = Path.cwd() / "assets"
+
+        pygame.display.set_icon(pygame.image.load(self._assets_path / "icon.png"))
+        self._bkgd_im = pygame.image.load(self._assets_path / "startmenu.png")
 
     def draw_level(self, grid: list[list[int]]) -> None:
         """Draws the entire level grid onto the screen."""
@@ -61,8 +66,9 @@ class Renderer:
         Draw Start Menu for Game.
         """
         self.screen.fill((0, 0, 0))
+        self.screen.blit(self._bkgd_im, (20,0))
         font = pygame.font.SysFont("arial", 40)
-        title = font.render("My Game", True, (255, 255, 255))
+        title = font.render("DunGen", True, (255, 255, 255))
         start_button = font.render("Start", True, (255, 255, 255))
         self.screen.blit(
             title,
