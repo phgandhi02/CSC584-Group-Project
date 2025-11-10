@@ -1,3 +1,9 @@
+"""
+Contains the Game object which is a singleton that manages the DunGen game.
+Game.run() contains the game flow logic. Object manages game logic, rendering,
+and cleanup for pygame dep.
+"""
+
 from pathlib import Path
 import json
 import locale
@@ -7,6 +13,7 @@ import pygame
 
 from src.pcg_generator import generate_level
 from src.renderer import Renderer, TILE_SIZE
+
 
 class Game:
     """
@@ -28,24 +35,51 @@ class Game:
         Create singleton instance of the game object. This object handles the
         interface for game logic, rendering, and user input.
         """
-        self.cwd: Path = Path.cwd()
-        self.x = 120
-        self.y = 120
+        # initialize game variables
         self.running = True
-        self.window = None
-        self.clock = None
-        self.game_renderer = None
+        self._cwd: Path = Path.cwd()
+        self.game_state = "start_menu"
+
+        map_width: int | float = self.config["layout"]["map_width"]
+        map_height: int | float = self.config["layout"]["map_height"]
+        screen_width: int | float = map_width * TILE_SIZE
+        screen_height: int | float = map_height * TILE_SIZE
+
+
+        # Initialize Pygame
+        pygame.init()
+
+        # initialize pygame variables
+        self._window = pygame.display.set_mode((800, 600))
+        self._clock = pygame.time.Clock()
+        # --- Initialize Renderer ---
+        self._game_renderer = Renderer(int(screen_width), int(screen_height))
+
+        icon_path: Path = self._cwd / "assets" / "icon.png"
+        pygame.display.set_icon(pygame.image.load(icon_path))
 
     def run(self):
-        self.on_init()
+        """Game flow loop. Main high-level logic for game.
+        """
+        self.setup()
         while self.running:
             self.on_event()
             self.update()
             self.render()
-            self.clock.tick(60)
+            self._clock.tick(60)
         self.on_cleanup()
 
-    def on_init(self):
+    def setup(self):
+        """Setup the game object with any post-init
+        """
+        # ------------------------------- Pygame setup ------------------------------- #
+
+        # init pygame if not already
+        if pygame.get_init() is False:
+            pygame.init()
+        # Set caption to the game window
+        pygame.display.set_caption("DunGen: A User Driven PCG Game")
+
         print("=== DunGen: Mission-Driven PCG Roguelike ===")
         print("\nDESCRIBE THE SETTING - The LLM will design a fitting mission!")
         print("\nQuick select (showcases all 6 algorithms):")
@@ -122,17 +156,7 @@ class Game:
         else:
             # Load default config
             print("Loading default config...")
-            config_file_path = Path.joinpath(Path.cwd(), "jsons", "sample.json")
-            try:
-                with open(config_file_path, "r", encoding=locale.getencoding()) as f:
-                    self.config = json.load(f)
-            except FileNotFoundError:
-                print("Error: default config not found!")
-                return
-            except json.JSONDecodeError:
-                print("Error: config file is not valid JSON!")
-                return
-         # --- 2. Generate Level ---
+        # --- 2. Generate Level ---
         try:
             # Adjust layout parameters based on mission (if present)
             if 'mission' in self.config:
@@ -209,65 +233,64 @@ class Game:
         except Exception as e:  # Catch other potential errors during generation
             print(f"Error during level generation: {e}")
             return
-        # --- 3. Initialize Pygame and Renderer (AFTER config is loaded) ---
-        pygame.init()
         
-        map_width: int | float = self.config['layout']['map_width']
-        map_height: int | float = self.config['layout']['map_height']
-        screen_width: int | float = map_width * TILE_SIZE
-        screen_height: int | float = map_height * TILE_SIZE
-
-        self.game_renderer = Renderer(int(screen_width), int(screen_height))
-        self.window = self.game_renderer.screen
-        
-        # Set icon and caption
-        icon_path: Path = self.cwd / "assets" / "icon.png"
-        pygame.display.set_icon(pygame.image.load(icon_path))
-        pygame.display.set_caption("DunGen: A User Driven PCG Game")
-        
-        self.clock = pygame.time.Clock()
-        
-        print(f"\nGame window opened: {int(screen_width)}x{int(screen_height)}")
-        return 
+        return
 
     def on_event(self):
+        """
+        Function to handle user inputs for every game update loop.
+        """
+        # For every event that occured in the current game update
         for event in pygame.event.get():
+            # -------------------------------- Close Game -------------------------------- #
+            # if window close button clicked then stop running Game.
             if event.type == pygame.QUIT:
                 self.running = False
                 break
+
+            # -------------------------------- Start Menu -------------------------------- #
+            elif self.game_state == "start_menu":
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    self.game_state = "game"
+                    break
+
+            # ------------------------------- Game Started ------------------------------- #
+            # elif user presses a key then handle accordingly.
             elif event.type == pygame.KEYDOWN:
+                # if the user presses left escape then stop the running Game and exit.
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
                     break
-                elif event.key == pygame.K_SPACE:
+                # if user presses space then regenerate level
+                elif event.key == pygame.K_r:
                     print("Regenerating level...")
                     try:
                         self.level_grid = generate_level(self.config)
-                    except Exception as e:
-                        print(f"Error during level regeneration: {e}")
+                    except Exception as e:  # pylint: disable=broad-except
                         # Keep the old grid if regeneration fails
-                elif event.key == pygame.K_RIGHT:
-                    self.x += 8
-                elif event.key == pygame.K_LEFT:
-                    self.x -= 8
-                elif event.key == pygame.K_DOWN:
-                    self.y += 8
-                elif event.key == pygame.K_UP:
-                    self.y -= 8
+                        print(f"Error during level regeneration: {e}")
 
     def update(self):
+        """
+        Update game characters after capturing user inputs.
+        """
         pass
 
     def render(self):
-        # self.window.fill((0, 0, 0))
-        # pygame.draw.rect(self.window, (0, 0, 255), (self.x, self.y, 400, 240))
-        # pygame.display.update()
-        # Drawing
+        """
+        Render game after update.
+        """
         if not self.running:
             return
-        self.game_renderer.draw_level(self.level_grid)
+        if self.game_state == "start_menu":
+            self._game_renderer.draw_start_menu()
+        elif self.game_state == "game_over":
+            # self.game_renderer.draw_game_over_screen()
+            pass
+        else:
+            self._game_renderer.draw_level(self.level_grid)
         pygame.display.flip()  # Update the full screen
 
     def on_cleanup(self):
-        """ Quits Pygame. """
+        """Quits Pygame."""
         pygame.quit()

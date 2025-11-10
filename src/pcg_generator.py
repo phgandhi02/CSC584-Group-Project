@@ -1,3 +1,7 @@
+"""
+Contains shape objects for creating rooms, and various functions for 
+performing PCG of the map (i.e. generate_drunkards_walk(), generate_level(), etc.)
+"""
 import random
 from typing import Any, Self
 
@@ -111,8 +115,8 @@ def create_room(grid: list[list[int]], room: Rect) -> None:
                 grid[y][x] = TILE_FLOOR
 
 
-def create_H_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int = 1) -> None:
-    """Creates an H tunnel
+def create_h_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int = 1) -> None:
+    """Creates a horizontal tunnel
 
     Args:
         grid (list[list[int]]): map of the level
@@ -132,8 +136,8 @@ def create_H_tunnel(grid: list[list[int]], x1: int, x2: int, y: int, width: int 
                 grid[tunnel_y][x] = TILE_FLOOR
 
 
-def create_V_tunnel(grid: list[list[int]], y1: int, y2: int, x: int, width: int = 1) -> None:
-    """Creates an tunnel going from one room down to another.
+def create_v_tunnel(grid: list[list[int]], y1: int, y2: int, x: int, width: int = 1) -> None:
+    """Creates a vertical tunnel.
 
     Args:
         grid (list[list[int]]): map of the level
@@ -761,11 +765,11 @@ def generate_random_rooms(config: dict[Any, Any]) -> list[list[int]]:
         (new_x, new_y) = rooms[i].center()
         
         if random.randint(0, 1) == 1:
-            create_H_tunnel(grid, prev_x, new_x, prev_y, corridor_width)
-            create_V_tunnel(grid, prev_y, new_y, new_x, corridor_width)
+            create_h_tunnel(grid, prev_x, new_x, prev_y, corridor_width)
+            create_v_tunnel(grid, prev_y, new_y, new_x, corridor_width)
         else:
-            create_V_tunnel(grid, prev_y, new_y, prev_x, corridor_width)
-            create_H_tunnel(grid, prev_x, new_x, new_y, corridor_width)
+            create_v_tunnel(grid, prev_y, new_y, prev_x, corridor_width)
+            create_h_tunnel(grid, prev_x, new_x, new_y, corridor_width)
         
         connected.add(i)
     
