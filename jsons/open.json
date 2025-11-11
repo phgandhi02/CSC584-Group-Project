@@ -9,8 +9,33 @@
     "corridor_width": 2        
   },
   "content": { 
-    "enemy_density": 0.05, "treasure_density": 0.1, "trap_density": 0.01, 
-    "enemy_types": ["orc"], "treasure_types": ["chest"] 
+    "enemy_density": 0.05,
+    "treasure_density": 0.1,
+    "trap_density": 0.01, 
+    "enemy_types": ["orc"],
+    "treasure_types": ["chest"] 
   },
-  "aesthetic": { "theme": "stone_fortress", "lighting_level": 0.8 }
+  "aesthetic": {
+    "theme": "stone_fortress",
+    "lighting_level": 0.8
+  },
+  "mission": {
+    "mission_type": "exploration",
+    "objectives": [
+      {
+        "objective_type": "treasure",
+        "placement_rule": "random_room",
+        "count": 5,
+        "description": "Loot the fortress treasury"
+      },
+      {
+        "objective_type": "secret",
+        "placement_rule": "hidden",
+        "count": 2,
+        "description": "Discover secret vaults"
+      }
+    ],
+    "difficulty_progression": "flat",
+    "description": "Explore the open fortress and claim its treasures"
+  }
 }

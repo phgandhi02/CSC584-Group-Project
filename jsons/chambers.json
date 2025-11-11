@@ -1,0 +1,52 @@
+{
+  "algorithm": "cellular_rooms",
+  "layout": {
+    "map_width": 60,
+    "map_height": 40,
+    "cellular_params": {
+      "initial_wall_probability": 0.50,
+      "iterations": 4,
+      "birth_limit": 4,
+      "death_limit": 3
+    }
+  },
+  "content": {
+    "enemy_density": 0.12,
+    "treasure_density": 0.08,
+    "trap_density": 0.02,
+    "enemy_types": ["orc", "skeleton"],
+    "treasure_types": ["chest", "gem"]
+  },
+  "aesthetic": {
+    "theme": "cave",
+    "lighting_level": 0.5
+  },
+  "mission": {
+    "mission_type": "linear_progression",
+    "objectives": [
+      {
+        "objective_type": "boss",
+        "placement_rule": "end_of_longest_path",
+        "count": 1,
+        "description": "Face the arena champion"
+      },
+      {
+        "objective_type": "miniboss",
+        "placement_rule": "central_room",
+        "count": 2,
+        "description": "Defeat challengers in battle halls"
+      },
+      {
+        "objective_type": "treasure",
+        "placement_rule": "random_room",
+        "count": 3,
+        "description": "Claim arena rewards"
+      }
+    ],
+    "difficulty_progression": "spike_at_end",
+    "description": "Fight through battle chambers to face the champion"
+  }
+}
+
+
+

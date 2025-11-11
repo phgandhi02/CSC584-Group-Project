@@ -4,14 +4,39 @@
     "map_width": 50,
     "map_height": 40,
     "drunkard_params": {
-        "target_floor_percent": 0.40,  
-        "start_pos": "center",       
-        "straight_bias": 0.6         
+      "target_floor_percent": 0.25,
+      "start_pos": "center",
+      "straight_bias": 0.75
     }
   },
   "content": { 
-    "enemy_density": 0.05, "treasure_density": 0.03, "trap_density": 0.08, 
-    "enemy_types": ["bat", "slime"], "treasure_types": ["gem"] 
+    "enemy_density": 0.05,
+    "treasure_density": 0.03,
+    "trap_density": 0.08, 
+    "enemy_types": ["bat", "slime"],
+    "treasure_types": ["gem"] 
   },
-  "aesthetic": { "theme": "cave", "lighting_level": 0.2 }
+  "aesthetic": {
+    "theme": "cave",
+    "lighting_level": 0.2
+  },
+  "mission": {
+    "mission_type": "survival",
+    "objectives": [
+      {
+        "objective_type": "safe_room",
+        "placement_rule": "checkpoint",
+        "count": 2,
+        "description": "Find safe areas to rest"
+      },
+      {
+        "objective_type": "treasure",
+        "placement_rule": "hidden",
+        "count": 3,
+        "description": "Discover hidden gems"
+      }
+    ],
+    "difficulty_progression": "increasing",
+    "description": "Navigate the twisting maze and survive to the end"
+  }
 }

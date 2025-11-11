@@ -18,5 +18,18 @@
   "aesthetic": {
     "theme": "default_dungeon", 
     "lighting_level": 0.5      
+  },
+  "mission": {
+    "mission_type": "exploration",
+    "objectives": [
+      {
+        "objective_type": "treasure",
+        "placement_rule": "dead_end",
+        "count": 3,
+        "description": "Find hidden treasures"
+      }
+    ],
+    "difficulty_progression": "flat",
+    "description": "Explore the dungeon and find hidden treasures"
   }
 }

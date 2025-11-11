@@ -1,3 +1,7 @@
+"""
+High-level logic for DunGen game
+"""
+
 from src.game import Game
 
 

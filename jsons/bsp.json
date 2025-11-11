@@ -1,0 +1,44 @@
+{
+  "algorithm": "bsp",
+  "layout": {
+    "map_width": 60,
+    "map_height": 40,
+    "max_rooms": 16,
+    "room_size_min": 5,
+    "room_size_max": 12,
+    "corridor_width": 1
+  },
+  "content": {
+    "enemy_density": 0.08,
+    "treasure_density": 0.06,
+    "trap_density": 0.03,
+    "enemy_types": ["goblin", "orc"],
+    "treasure_types": ["gold_coin", "chest"]
+  },
+  "aesthetic": {
+    "theme": "default_dungeon",
+    "lighting_level": 0.5
+  },
+  "mission": {
+    "mission_type": "linear_progression",
+    "objectives": [
+      {
+        "objective_type": "boss",
+        "placement_rule": "end_of_longest_path",
+        "count": 1,
+        "description": "Defeat the fortress commander"
+      },
+      {
+        "objective_type": "treasure",
+        "placement_rule": "dead_end",
+        "count": 2,
+        "description": "Secure military supplies"
+      }
+    ],
+    "difficulty_progression": "increasing",
+    "description": "Infiltrate the fortress and defeat the commander"
+  }
+}
+
+
+
