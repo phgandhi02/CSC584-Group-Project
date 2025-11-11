@@ -18,7 +18,8 @@ from src.user_input import (
     place_mission_objectives,
 )
 from src.pcg_generator import generate_level
-from src.renderer import Renderer, TILE_SIZE
+from src.renderer import Renderer, TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
+from src.player import Player
 
 def singleton(cls, *args: tuple[Any], **kw: dict[str,Any]) -> Callable[..., Any]: # type: ignore
     instances: dict[Any, Any] = {}
@@ -54,6 +55,7 @@ class Game:
         self.game_state = "start_menu"
         self.config: dict[str, Any] = {}
         self.level_grid: list[list[int]] = [[]]
+        self.player: Player | None = None
         # self._game_renderer: Renderer
 
         # Initialize Pygame
@@ -124,6 +126,16 @@ class Game:
                     except Exception as e:  # pylint: disable=broad-except
                         # Keep the old grid if regeneration fails
                         print(f"Error during level regeneration: {e}")
+                # Handle player movement with arrow keys (one move per key press)
+                elif self.player is not None and self.game_state == "game":
+                    if event.key == pygame.K_UP:
+                        self.player.move(0, -1, self.level_grid)
+                    elif event.key == pygame.K_DOWN:
+                        self.player.move(0, 1, self.level_grid)
+                    elif event.key == pygame.K_LEFT:
+                        self.player.move(-1, 0, self.level_grid)
+                    elif event.key == pygame.K_RIGHT:
+                        self.player.move(1, 0, self.level_grid)
 
     def selection_menu(self) -> None:
         """
@@ -137,6 +149,10 @@ class Game:
 
             self.level_grid = generate_level(self.config)
             self.config = place_mission_objectives(self.config, self.level_grid)
+
+            # Initialize player at the LLM-provided start position
+            start_x, start_y = self.config['start_position']
+            self.player = Player(start_x, start_y, TILE_SIZE)
         except KeyError as e:
             print(f"Error: Missing key in config JSON: {e}")
             return None
@@ -144,16 +160,13 @@ class Game:
             print(f"Error during level generation: {e}")
             return None
 
-        map_width: int = self.config["layout"]["map_width"]
-        map_height: int = self.config["layout"]["map_height"]
-        screen_width: int = map_width * TILE_SIZE
-        screen_height: int = map_height * TILE_SIZE
         self.game_state = "game"
-        self._game_renderer = Renderer(screen_width, screen_height)
+        self._game_renderer = Renderer(WINDOW_WIDTH, WINDOW_HEIGHT)
 
     def update(self) -> None:
         """
         Update game characters after capturing user inputs.
+        Movement is now handled in on_event() for event-based input.
         """
         pass
 
@@ -173,7 +186,11 @@ class Game:
             # self.game_renderer.draw_game_over_screen()
             pass
         else:
-            self._game_renderer.draw_level(self.level_grid)
+            player_pos = self.player.get_position() if self.player else None
+            # Update camera to follow player
+            if player_pos is not None:
+                self._game_renderer.camera.center_on(player_pos[0], player_pos[1])
+            self._game_renderer.draw_level(self.level_grid, player_pos)
         pygame.display.flip()  # Update the full screen
 
     def on_cleanup(self) -> None:
