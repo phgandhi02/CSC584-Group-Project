@@ -6,6 +6,7 @@ and cleanup for pygame dep.
 
 # System Package Deps
 from typing import Any
+from collections.abc import Callable
 
 # External Package Deps
 import pygame
@@ -19,7 +20,15 @@ from src.user_input import (
 from src.pcg_generator import generate_level
 from src.renderer import Renderer, TILE_SIZE
 
+def singleton(cls, *args: tuple[Any], **kw: dict[str,Any]) -> Callable[..., Any]: # type: ignore
+    instances: dict[Any, Any] = {}
+    def _singleton(*args: tuple[Any], **kw: dict[str,Any]) -> Any:
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+    return _singleton
 
+@singleton
 class Game:
     """
     Singleton class to manage the DunGen top-down dungeon crawler game.
@@ -35,7 +44,7 @@ class Game:
         _instance: Class attribute to hold the single instance of the class.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Create singleton instance of the game object. This object handles the
         interface for game logic, rendering, and user input.
