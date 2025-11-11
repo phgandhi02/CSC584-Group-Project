@@ -69,7 +69,7 @@ class CellularParams(BaseModel):
     )
 
 
-class RoomPlacementLayout(BaseModel):
+class RandomRoomPlacementLayout(BaseModel):
     """Layout parameters for random room placement algorithm."""
 
     map_width: int = PydanticField(
@@ -186,7 +186,7 @@ class RoomPlacementConfig(BaseModel):
     algorithm: Literal["random_room_placement"] = PydanticField(
         default="random_room_placement"
     )
-    layout: RoomPlacementLayout
+    layout: RandomRoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
     mission: Mission
@@ -208,7 +208,7 @@ class RandomRoomConfig(BaseModel):
     algorithm: Literal["random_room_placement"] = PydanticField(
         default="random_room_placement"
     )
-    layout: RoomPlacementLayout
+    layout: RandomRoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
     mission: Mission
@@ -218,7 +218,7 @@ class BSPConfig(BaseModel):
     """Complete configuration for BSP algorithm."""
 
     algorithm: Literal["bsp"] = PydanticField(default="bsp")
-    layout: RoomPlacementLayout
+    layout: RandomRoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
     mission: Mission
@@ -250,7 +250,7 @@ class HybridRoomsCavesConfig(BaseModel):
     algorithm: Literal["hybrid_rooms_caves"] = PydanticField(
         default="hybrid_rooms_caves"
     )
-    layout: RoomPlacementLayout
+    layout: RandomRoomPlacementLayout
     content: Content
     aesthetic: Aesthetic
     mission: Mission
