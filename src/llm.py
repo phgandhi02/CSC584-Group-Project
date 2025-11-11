@@ -16,6 +16,7 @@ import locale
 import json
 from datetime import datetime
 from pathlib import Path
+import traceback
 from typing import (
     Literal,
     Any,
@@ -578,6 +579,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"\n[ERROR] Error generating level: {e}")
-        import traceback
-
         traceback.print_exc()
