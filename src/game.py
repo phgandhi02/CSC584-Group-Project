@@ -17,7 +17,7 @@ from src.user_input import (
     place_mission_objectives,
 )
 from src.pcg_generator import generate_level
-from src.renderer import Renderer, TILE_SIZE
+from src.renderer import Renderer, TILE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
 from src.player import Player
 
 
@@ -151,12 +151,8 @@ class Game:
             print(f"Error during level generation: {e}")
             return None
 
-        map_width: int = self.config["layout"]["map_width"]
-        map_height: int = self.config["layout"]["map_height"]
-        screen_width: int = map_width * TILE_SIZE
-        screen_height: int = map_height * TILE_SIZE
         self.game_state = "game"
-        self._game_renderer = Renderer(screen_width, screen_height)
+        self._game_renderer = Renderer(WINDOW_WIDTH, WINDOW_HEIGHT)
 
     def update(self) -> None:
         """
@@ -182,6 +178,9 @@ class Game:
             pass
         else:
             player_pos = self.player.get_position() if self.player else None
+            # Update camera to follow player
+            if player_pos is not None:
+                self._game_renderer.camera.center_on(player_pos[0], player_pos[1])
             self._game_renderer.draw_level(self.level_grid, player_pos)
         pygame.display.flip()  # Update the full screen
 
